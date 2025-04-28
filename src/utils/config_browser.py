@@ -137,7 +137,7 @@ def create_required_directories():
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StarLabs Configuration</title>
+    <title>StarLabs Somnia Configuration</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -156,7 +156,7 @@ def create_required_directories():
         <header>
             <div class="logo">
                 <i class="fas fa-star"></i>
-                <h1>StarLabs Configuration</h1>
+                <h1>StarLabs Somnia Configuration</h1>
             </div>
             <div class="header-controls">
                 <button id="saveButton" class="btn save-btn"><i class="fas fa-save"></i> Save Configuration</button>
@@ -174,16 +174,12 @@ def create_required_directories():
                         <i class="fas fa-exchange-alt"></i>
                         <span>Flow</span>
                     </div>
-                    <div class="sidebar-item" data-section="swaps">
-                        <i class="fas fa-sync"></i>
-                        <span>Hub Somnia Swaps</span>
-                    </div>
-                    <div class="sidebar-item" data-section="captcha">
-                        <i class="fas fa-robot"></i>
-                        <span>Captcha</span>
+                    <div class="sidebar-item" data-section="somnia-network">
+                        <i class="fas fa-network-wired"></i>
+                        <span>Somnia Network</span>
                     </div>
                     <div class="sidebar-item" data-section="rpcs">
-                        <i class="fas fa-network-wired"></i>
+                        <i class="fas fa-server"></i>
                         <span>RPCs</span>
                     </div>
                     <div class="sidebar-item" data-section="others">
@@ -1128,7 +1124,17 @@ async function saveConfig() {
 
 // Функция для сбора данных формы
 function collectFormData() {
-    config = {}
+    let config = {
+        SETTINGS: {},
+        FLOW: {},
+        SOMNIA_NETWORK: {
+            SOMNIA_SWAPS: {},
+            SOMNIA_TOKEN_SENDER: {},
+            SOMNIA_CAMPAIGNS: {}
+        },
+        RPCS: {},
+        OTHERS: {}
+    };
     
     // Собираем данные из всех полей ввода
     document.querySelectorAll('[data-config-path]').forEach(element => {
@@ -1157,13 +1163,15 @@ function collectFormData() {
             if (!current[rangeKey]) {
                 current[rangeKey] = [0, 0];
             }
-            current[rangeKey][0] = parseInt(element.value);
+            current[rangeKey][0] = element.dataset.type === 'float' ? 
+                parseFloat(element.value) : parseInt(element.value);
         } else if (element.classList.contains('range-max')) {
             const rangeKey = lastKey.replace('_MAX', '');
             if (!current[rangeKey]) {
                 current[rangeKey] = [0, 0];
             }
-            current[rangeKey][1] = parseInt(element.value);
+            current[rangeKey][1] = element.dataset.type === 'float' ? 
+                parseFloat(element.value) : parseInt(element.value);
         } else if (element.classList.contains('list-input')) {
             // Для списков (разделенных запятыми)
             current[lastKey] = element.value.split(',')
@@ -1178,6 +1186,8 @@ function collectFormData() {
             // Для обычных полей
             if (element.dataset.type === 'number') {
                 current[lastKey] = parseInt(element.value);
+            } else if (element.dataset.type === 'float') {
+                current[lastKey] = parseFloat(element.value);
             } else {
                 current[lastKey] = element.value;
             }
@@ -1196,8 +1206,7 @@ function renderConfig(config) {
     const sections = {
         'settings': { key: 'SETTINGS', title: 'Settings', icon: 'cog' },
         'flow': { key: 'FLOW', title: 'Flow', icon: 'exchange-alt' },
-        'swaps': { key: 'HUB_Somnia_SWAPS', title: 'Hub Somnia Swaps', icon: 'sync' },
-        'captcha': { key: 'CAPTCHA', title: 'Captcha', icon: 'robot' },
+        'somnia-network': { key: 'SOMNIA_NETWORK', title: 'Somnia Network', icon: 'network-wired' },
         'rpcs': { key: 'RPCS', title: 'RPCs', icon: 'network-wired' },
         'others': { key: 'OTHERS', title: 'Others', icon: 'ellipsis-h' }
     };
@@ -1230,7 +1239,7 @@ function renderConfig(config) {
                 // Карточка для диапазонов аккаунтов
                 createCard(cardsContainer, 'Account Settings', 'users', [
                     { key: 'ACCOUNTS_RANGE', value: config[key]['ACCOUNTS_RANGE'] },
-                    { key: 'EXACT_ACCOUNTS_TO_USE', value: config[key]['EXACT_ACCOUNTS_TO_USE'], isSpaceList: true }
+                    { key: 'EXACT_ACCOUNTS_TO_USE', value: config[key]['EXACT_ACCOUNTS_TO_USE'] }
                 ], key);
                 
                 // Карточка для пауз
@@ -1246,8 +1255,31 @@ function renderConfig(config) {
                 createCard(cardsContainer, 'Telegram Settings', 'paper-plane', [
                     { key: 'SEND_TELEGRAM_LOGS', value: config[key]['SEND_TELEGRAM_LOGS'] },
                     { key: 'TELEGRAM_BOT_TOKEN', value: config[key]['TELEGRAM_BOT_TOKEN'] },
-                    { key: 'TELEGRAM_USERS_IDS', value: config[key]['TELEGRAM_USERS_IDS'], isSpaceList: true }
+                    { key: 'TELEGRAM_USERS_IDS', value: config[key]['TELEGRAM_USERS_IDS'] }
                 ], key);
+            } else if (key === 'FLOW') {
+                // Карточка для настроек Flow
+                createCard(cardsContainer, 'Flow Settings', 'exchange-alt', [
+                    { key: 'SKIP_FAILED_TASKS', value: config[key]['SKIP_FAILED_TASKS'] }
+                ], key);
+            } else if (key === 'SOMNIA_NETWORK') {
+                // Карточка для настроек Somnia Swaps
+                createCard(cardsContainer, 'Somnia Swaps', 'sync', [
+                    { key: 'BALANCE_PERCENT_TO_SWAP', value: config[key]['SOMNIA_SWAPS']['BALANCE_PERCENT_TO_SWAP'] },
+                    { key: 'NUMBER_OF_SWAPS', value: config[key]['SOMNIA_SWAPS']['NUMBER_OF_SWAPS'] }
+                ], key + '.SOMNIA_SWAPS');
+                
+                // Карточка для Somnia Token Sender
+                createCard(cardsContainer, 'Somnia Token Sender', 'paper-plane', [
+                    { key: 'BALANCE_PERCENT_TO_SEND', value: config[key]['SOMNIA_TOKEN_SENDER']['BALANCE_PERCENT_TO_SEND'] },
+                    { key: 'NUMBER_OF_SENDS', value: config[key]['SOMNIA_TOKEN_SENDER']['NUMBER_OF_SENDS'] },
+                    { key: 'SEND_ALL_TO_DEVS_CHANCE', value: config[key]['SOMNIA_TOKEN_SENDER']['SEND_ALL_TO_DEVS_CHANCE'] }
+                ], key + '.SOMNIA_TOKEN_SENDER');
+                
+                // Карточка для Somnia Campaigns
+                createCard(cardsContainer, 'Somnia Campaigns', 'bullhorn', [
+                    { key: 'REPLACE_FAILED_TWITTER_ACCOUNT', value: config[key]['SOMNIA_CAMPAIGNS']['REPLACE_FAILED_TWITTER_ACCOUNT'] }
+                ], key + '.SOMNIA_CAMPAIGNS');
             } else if (key === 'RPCS') {
                 // Специальная обработка для RPCs
                 createCard(cardsContainer, 'RPC Settings', 'network-wired', 
@@ -1255,16 +1287,16 @@ function renderConfig(config) {
                         key: k, 
                         value: v, 
                         isList: true,
-                        isArray: true  // Добавляем флаг для массивов
+                        isArray: true
                     })), 
                     key
                 );
-            } else {
-                // Остальные категории
-                createCard(cardsContainer, `${title} Settings`, icon, 
-                    Object.entries(config[key]).map(([k, v]) => ({ key: k, value: v })), 
-                    key
-                );
+            } else if (key === 'OTHERS') {
+                // Карточка для прочих настроек
+                createCard(cardsContainer, 'Other Settings', 'cogs', [
+                    { key: 'SKIP_SSL_VERIFICATION', value: config[key]['SKIP_SSL_VERIFICATION'] },
+                    { key: 'USE_PROXY_FOR_RPC', value: config[key]['USE_PROXY_FOR_RPC'] }
+                ], key);
             }
         }
         
@@ -1326,8 +1358,14 @@ function createTextField(container, key, value, path) {
     input.dataset.configPath = path;
     
     if (typeof value === 'number') {
-        input.dataset.type = 'number';
-        input.type = 'number';
+        if (Number.isInteger(value)) {
+            input.dataset.type = 'number';
+            input.type = 'number';
+        } else {
+            input.dataset.type = 'float';
+            input.type = 'number';
+            input.step = '0.1';
+        }
         input.className += ' small-input';
     }
     
@@ -1353,7 +1391,15 @@ function createRangeField(container, key, value, path) {
     minInput.className = 'field-input range-min small-input';
     minInput.value = value[0];
     minInput.dataset.configPath = `${path}_MIN`;
-    minInput.dataset.type = 'number';
+    
+    // Определяем тип значения (целое или с плавающей точкой)
+    const isFloat = typeof value[0] === 'number' && !Number.isInteger(value[0]);
+    if (isFloat) {
+        minInput.dataset.type = 'float';
+        minInput.step = '0.1';
+    } else {
+        minInput.dataset.type = 'number';
+    }
     
     const separator = document.createElement('span');
     separator.className = 'range-separator';
@@ -1364,7 +1410,14 @@ function createRangeField(container, key, value, path) {
     maxInput.className = 'field-input range-max small-input';
     maxInput.value = value[1];
     maxInput.dataset.configPath = `${path}_MAX`;
-    maxInput.dataset.type = 'number';
+    
+    // Применяем тот же тип для maxInput
+    if (isFloat) {
+        maxInput.dataset.type = 'float';
+        maxInput.step = '0.1';
+    } else {
+        maxInput.dataset.type = 'number';
+    }
     
     rangeDiv.appendChild(minInput);
     rangeDiv.appendChild(separator);
