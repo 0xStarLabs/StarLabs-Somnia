@@ -1,0 +1,87 @@
+# --------------------------- #
+# SETTINGS SECTION
+# --------------------------- #
+SETTINGS:
+    # number of concurrent threads
+    THREADS: 1
+
+    # number of retries for ANY action
+    ATTEMPTS: 5
+    
+    # account range.
+    # BY DEFAULT: [0, 0] - all accounts
+    # [3, 5] - only 3 4 5 accounts
+    # [7, 7] - only 7 account
+    ACCOUNTS_RANGE: [0, 0]
+    
+    # WORKS ONLY IF ACCOUNTS_RANGE IS [0, 0]
+    # exact accounts to use.
+    # BY DEFAULT: [] - all accounts
+    # Example: [1, 4, 6] - bot will use only 1, 4 and 6 accounts
+    EXACT_ACCOUNTS_TO_USE: []
+    
+    SHUFFLE_WALLETS: true
+
+    # pause between attempts
+    PAUSE_BETWEEN_ATTEMPTS: [3, 10]
+    
+    # pause between swaps
+    PAUSE_BETWEEN_SWAPS: [3, 10]
+    
+    # pause in seconds between accounts
+    RANDOM_PAUSE_BETWEEN_ACCOUNTS: [3, 10]
+    
+    # pause in seconds between actions
+    RANDOM_PAUSE_BETWEEN_ACTIONS: [3, 10]
+    
+    # random pause before start of every account
+    # to make sure that all accounts will be started at different times
+    RANDOM_INITIALIZATION_PAUSE: [3, 40]
+    
+    # if true, bot will send logs to telegram
+    SEND_TELEGRAM_LOGS: false
+    # telegram bot token
+    TELEGRAM_BOT_TOKEN: "12317283:lskjalsdfasdfasd-sdfadfasd"
+    # telegram users ids
+    TELEGRAM_USERS_IDS: [235123432]
+
+
+FLOW:
+    # if task from database failed, bot will skip it
+    # if false, bot will stop and show error
+    SKIP_FAILED_TASKS: false
+
+
+SOMNIA_NETWORK:
+    # SETTINGS FOR ACTIONS ON https://quest.somnia.network/
+    # use for ping pong swaps
+    SOMNIA_SWAPS:
+        # percent of balance to swap
+        BALANCE_PERCENT_TO_SWAP: [5, 10]
+        # random number of swaps
+        NUMBER_OF_SWAPS: [1, 2]
+
+    # Only for SEND_TOKENS task on somnia network website
+    SOMNIA_TOKEN_SENDER:
+        # percent of balance to send
+        BALANCE_PERCENT_TO_SEND: [1.5, 3]
+        # random number of sends
+        NUMBER_OF_SENDS: [1, 1]
+
+        # chance to send tokens to devs. if 100, bot will send tokens to devs wallets every time
+        # if 0, bot will send tokens to random wallets
+        SEND_ALL_TO_DEVS_CHANCE: 50
+
+    SOMNIA_CAMPAIGNS:
+        # if true, bot will replace failed twitter account with next one
+        REPLACE_FAILED_TWITTER_ACCOUNT: false
+
+
+RPCS:
+    SOMNIA: ["https://dream-rpc.somnia.network"]
+
+
+OTHERS:
+    SKIP_SSL_VERIFICATION: true
+    USE_PROXY_FOR_RPC: true
+  
