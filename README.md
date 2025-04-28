@@ -1,30 +1,35 @@
-StarLabs-Somnia Bot 🚀
-A powerful and flexible automation tool for Somnia Network with multiple features for testnet activities.
+# StarLabs-Somnia Bot 🚀
 
-TUTORIAL >>> star-labs.gitbook.io/star-labs/software/somnia/ru <<< TUTORIAL >>> star-labs.gitbook.io/star-labs/software/somnia/ru <<< TUTORIAL >>> star-labs.gitbook.io/star-labs/software/somnia/ru <<<
+A powerful and flexible automation tool for **Somnia Network** with multiple features for testnet activities.
 
-🌟 Features
-✨ Multi-threaded processing
-🔄 Automatic retries with configurable attempts
-🔐 Proxy support
-📊 Account range selection
-🎲 Random pauses between operations
-🔔 Telegram logging integration
-📝 Detailed transaction tracking
-🧩 Modular task system
-🤖 Social media integration (Twitter, Discord)
-⚠️ Discord inviter
+**TUTORIAL >>>** [star-labs.gitbook.io/star-labs/software/somnia/ru](https://star-labs.gitbook.io/star-labs/software/somnia/ru) **<<< TUTORIAL**
 
-🎯 Available Actions:
-Network Operations:
+## 🌟 Features
+
+- ✨ Multi-threaded processing
+- 🔄 Automatic retries with configurable attempts
+- 🔐 Proxy support
+- 📊 Account range selection
+- 🎲 Random pauses between operations
+- 🔔 Telegram logging integration
+- 📝 Detailed transaction tracking
+- 🧩 Modular task system
+- 🤖 Social media integration (Twitter, Discord)
+- ⚠️ Discord inviter
+- 💬 Quills blockchain messaging
+
+## 🎯 Available Actions
+
+**Network Operations:**
 - Somnia Network Faucet
 - Send Tokens
 - Set Username
 - Network Info
 - Connect Socials (Twitter, Discord)
 - Complete Campaigns
+- Discord Inviter
 
-Minting & NFTs:
+**Minting & NFTs:**
 - Mint Ping Pong Tokens
 - Mint SHANNON NFT (Nerzo)
 - Mint NEE NFT (Nerzo)
@@ -32,38 +37,42 @@ Minting & NFTs:
 - Mint SOMNI NFT (Mintaura)
 - Deploy Contracts (Mintair)
 
-Trading & Swaps:
+**Trading & Swaps:**
 - Ping Pong Token Swaps
 - Quills Chat Messages (Blockchain messaging)
 
-📋 Requirements
-- Python 3.11.1 - 3.11.6
+## 📋 Requirements
+
+- Python `3.11.1` - `3.11.6`
 - Private keys for Somnia Network wallets
 - Proxies for enhanced security
 - Twitter tokens for social media integration
 - Discord tokens for social media integration
+- Quills messages for blockchain messaging
 
+## 🚀 Installation
 
-🚀 Installation
-1. Clone the repository:
-```bash
-git clone https://github.com/0xStarLabs/StarLabs-Somnia.git
-cd StarLabs-Somnia
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/0xStarLabs/StarLabs-Somnia.git
+    cd StarLabs-Somnia
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+3.  Configure your settings in `config.yaml`
+4.  Add your private keys to `data/private_keys.txt`
+5.  Add proxies to `data/proxies.txt`
+6.  Add Twitter tokens to `data/twitter_tokens.txt`
+7.  Add Discord tokens to `data/discord_tokens.txt`
+8.  Add Quills messages to `data/random_message_quills.txt`
+
+## 📁 Project Structure
+
 ```
-
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-3. Configure your settings in config.yaml
-4. Add your private keys to data/private_keys.txt
-5. Add proxies to data/proxies.txt
-6. Add Twitter tokens to data/twitter_tokens.txt
-7. Add Discord tokens to data/discord_tokens.txt
-8. Add Quills messages to data/random_message_quills.txt
-
-📁 Project Structure
 StarLabs-Somnia/
 ├── data/
 │   ├── private_keys.txt         # Wallet private keys
@@ -76,16 +85,20 @@ StarLabs-Somnia/
 │   └── utils/                   # Helper utilities
 ├── config.yaml                  # Main configuration file
 └── tasks.py                     # Task definitions
+```
 
-📝 Configuration
-1. data files
-- private_keys.txt: One private key per line
-- proxies.txt: One proxy per line (format: http://user:pass@ip:port)
-- twitter_tokens.txt: One Twitter token per line
-- discord_tokens.txt: One Discord token per line
-- random_message_quills.txt: One message per line for Quills blockchain
+## 📝 Configuration
 
-2. config.yaml Settings
+### 1. Data Files
+
+-   `data/private_keys.txt`: One private key per line
+-   `data/proxies.txt`: One proxy per line (format: `http://user:pass@ip:port`)
+-   `data/twitter_tokens.txt`: One Twitter token per line
+-   `data/discord_tokens.txt`: One Discord token per line
+-   `data/random_message_quills.txt`: One message per line for Quills blockchain
+
+### 2. `config.yaml` Settings
+
 ```yaml
 SETTINGS:
   THREADS: 1                      # Number of parallel threads
@@ -97,7 +110,8 @@ SETTINGS:
   PAUSE_BETWEEN_SWAPS: [3, 10]    # Random pause between swap operations
 ```
 
-3. Module Configurations
+### 3. Module Configurations
+
 ```yaml
 SOMNIA_NETWORK:
   SOMNIA_SWAPS:
@@ -111,28 +125,38 @@ SOMNIA_NETWORK:
 
   SOMNIA_CAMPAIGNS:
     REPLACE_FAILED_TWITTER_ACCOUNT: false
+
+  # Add Discord inviter config if available
+  DISCORD_INVITER:
+    INVITE_LINK: "" # Your Discord invite link
 ```
 
-🎮 Usage
-Task Configuration
-Edit tasks.py to select which modules to run:
+## 🎮 Usage
+
+### Task Configuration
+
+Edit `tasks.py` to select which modules to run:
+
 ```python
 TASKS = ["CAMPAIGNS"]  # Replace with your desired tasks
 ```
 
-Available task presets:
-- CAMPAIGNS - Complete Somnia Network campaigns
-- FAUCET - Claim Somnia Network tokens
-- SEND_TOKENS - Send tokens to random wallets
-- CONNECT_SOCIALS - Connect social media accounts (Twitter, Discord)
-- MINT_PING_PONG - Mint Ping Pong tokens
-- SWAPS_PING_PONG - Swap Ping Pong tokens
-- QUILLS_CHAT - Send messages in Quills blockchain
-- SOMNIA_NETWORK_SET_USERNAME - Set username on Somnia Network
-- SOMNIA_NETWORK_INFO - Show account information
+**Available task presets:**
+- `CAMPAIGNS` - Complete Somnia Network campaigns
+- `FAUCET` - Claim Somnia Network tokens
+- `SEND_TOKENS` - Send tokens to random wallets
+- `CONNECT_SOCIALS` - Connect social media accounts (Twitter, Discord)
+- `MINT_PING_PONG` - Mint Ping Pong tokens
+- `SWAPS_PING_PONG` - Swap Ping Pong tokens
+- `QUILLS_CHAT` - Send messages in Quills blockchain
+- `SOMNIA_NETWORK_SET_USERNAME` - Set username on Somnia Network
+- `SOMNIA_NETWORK_INFO` - Show account information
+- `DISCORD_INVITER` - Invite users to Discord server
 
-Custom Task Sequences
+### Custom Task Sequences
+
 You can create custom task sequences combining different modules:
+
 ```python
 TASKS = ["MY_CUSTOM_TASK"]
 
@@ -141,17 +165,21 @@ MY_CUSTOM_TASK = [
     ("mint_ping_pong", "swaps_ping_pong"), # Then run both in random order
     ["nerzo_shannon", "nerzo_nee"],     # Then run only one randomly
     "quills_chat",                      # Send message in Quills
-    "connect_socials"                   # Connect social media accounts
+    "connect_socials",                  # Connect social media accounts
+    "discord_inviter"                 # Invite users to Discord
 ]
 ```
 
-Run the bot:
+### Run the bot
+
 ```bash
 python main.py
 ```
 
-📜 License
+## 📜 License
+
 MIT License
 
-⚠️ Disclaimer
+## ⚠️ Disclaimer
+
 This tool is for educational purposes only. Use at your own risk and in accordance with relevant terms of service.
