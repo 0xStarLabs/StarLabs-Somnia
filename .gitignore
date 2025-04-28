@@ -6,6 +6,5 @@ __pycache__
 /data/success_data
 test.py
 app.log
-/data/profiles
 src/version.txt
 data/proxies.txt
