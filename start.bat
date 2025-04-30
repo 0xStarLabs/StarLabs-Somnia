@@ -1,4 +1,7 @@
 @echo off
+
+title Somnia Bot
+
 echo Checking virtual environment...
 
 if not exist venv (
