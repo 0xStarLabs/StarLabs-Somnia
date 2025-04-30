@@ -109,6 +109,13 @@ class Start:
                     await self.somnia_web3.cleanup()
                 return True
 
+            pause = random.randint(
+                self.config.SETTINGS.RANDOM_INITIALIZATION_PAUSE[0],
+                self.config.SETTINGS.RANDOM_INITIALIZATION_PAUSE[1],
+            )
+            logger.info(f"[{self.account_index}] Sleeping for {pause} seconds before start...")
+            await asyncio.sleep(pause)
+
             task_plan_msg = [f"{i+1}. {task['name']}" for i, task in enumerate(tasks)]
             logger.info(
                 f"{self.account_index} | Task execution plan: {' | '.join(task_plan_msg)}"
@@ -208,6 +215,14 @@ class Start:
                 logger.info(f"{self.account_index} | All sessions closed successfully")
             except Exception as e:
                 logger.error(f"{self.account_index} | Error during cleanup: {e}")
+
+            
+            pause = random.randint(
+                self.config.SETTINGS.RANDOM_PAUSE_BETWEEN_ACCOUNTS[0],
+                self.config.SETTINGS.RANDOM_PAUSE_BETWEEN_ACCOUNTS[1],
+            )
+            logger.info(f"[{self.account_index}] Sleeping for {pause} seconds before next account...")
+            await asyncio.sleep(pause)
 
     async def execute_task(self, task):
         """Execute a single task"""
