@@ -90,4 +90,4 @@ class Alze:
                 f"{self.account_index} | Error minting YAPPERS NFT: {e}. Sleeping for {random_sleep} seconds..."
             )
             await asyncio.sleep(random_sleep)
-            raise e
+            return False

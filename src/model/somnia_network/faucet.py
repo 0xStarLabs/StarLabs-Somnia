@@ -71,7 +71,7 @@ class FaucetService:
                 f"{self.somnia.account_index} | Faucet error: {e}. Sleeping {random_pause} seconds..."
             )
             await asyncio.sleep(random_pause)
-            raise
+            return False
 
     async def request_ping_pong_faucet(self):
         try:

@@ -13,61 +13,66 @@ class RandomTokenSender:
         self.somnia = instance
 
     async def send_tokens(self):
-        result = True
-        balance = await self.somnia.web3.get_balance(self.somnia.wallet.address)
-        if balance.wei == 0:
-            logger.warning(f"{self.somnia.account_index} | No balance to send tokens")
+        try:
+            result = True
+            balance = await self.somnia.web3.get_balance(self.somnia.wallet.address)
+            if balance.wei == 0:
+                logger.warning(f"{self.somnia.account_index} | No balance to send tokens")
+                return False
+
+            # Получаем количество транзакций из конфига
+            min_txs, max_txs = self.somnia.config.SOMNIA_NETWORK.SOMNIA_TOKEN_SENDER.NUMBER_OF_SENDS
+            num_transactions = random.randint(min_txs, max_txs)
+
+            logger.info(
+                f"{self.somnia.account_index} | Planning to send {num_transactions} transactions"
+            )
+
+            for i in range(num_transactions):
+                # Определяем процент баланса для отправки
+                min_percent, max_percent = (
+                    self.somnia.config.SOMNIA_NETWORK.SOMNIA_TOKEN_SENDER.BALANCE_PERCENT_TO_SEND
+                )
+                percent_to_send = random.uniform(min_percent, max_percent)
+
+                # Определяем получателя на основе шанса отправки разработчикам
+                dev_chance = self.somnia.config.SOMNIA_NETWORK.SOMNIA_TOKEN_SENDER.SEND_ALL_TO_DEVS_CHANCE
+
+                if random.randint(1, 100) <= dev_chance:
+                    # Отправляем на кошелек разработчика
+                    recipient = random.choice(DEVS_RECIPIENTS)
+                    recipient = Web3.to_checksum_address(recipient)
+                    logger.info(
+                        f"{self.somnia.account_index} | Transaction {i+1}/{num_transactions}: Sending to dev wallet {recipient}"
+                    )
+                else:
+                    # Генерируем случайный приватный ключ
+                    private_key = Account.create().key
+
+                    # Создаем аккаунт из приватного ключа и получаем адрес
+                    random_account = Account.from_key(private_key)
+                    recipient = random_account.address
+
+                    logger.info(
+                        f"{self.somnia.account_index} | Transaction {i+1}/{num_transactions}: Sending to random wallet {recipient}"
+                    )
+
+                # Вызываем метод для фактической отправки
+                result = await self._send(recipient, percent_to_send)
+
+                # Небольшая пауза между транзакциями
+                await asyncio.sleep(
+                    random.uniform(
+                        self.somnia.config.SETTINGS.RANDOM_PAUSE_BETWEEN_ACTIONS[0],
+                        self.somnia.config.SETTINGS.RANDOM_PAUSE_BETWEEN_ACTIONS[1],
+                    )
+                )
+
+            return result
+
+        except Exception as e:
+            logger.error(f"{self.somnia.account_index} | Send tokens error: {e}")
             return False
-
-        # Получаем количество транзакций из конфига
-        min_txs, max_txs = self.somnia.config.SOMNIA_NETWORK.SOMNIA_TOKEN_SENDER.NUMBER_OF_SENDS
-        num_transactions = random.randint(min_txs, max_txs)
-
-        logger.info(
-            f"{self.somnia.account_index} | Planning to send {num_transactions} transactions"
-        )
-
-        for i in range(num_transactions):
-            # Определяем процент баланса для отправки
-            min_percent, max_percent = (
-                self.somnia.config.SOMNIA_NETWORK.SOMNIA_TOKEN_SENDER.BALANCE_PERCENT_TO_SEND
-            )
-            percent_to_send = random.uniform(min_percent, max_percent)
-
-            # Определяем получателя на основе шанса отправки разработчикам
-            dev_chance = self.somnia.config.SOMNIA_NETWORK.SOMNIA_TOKEN_SENDER.SEND_ALL_TO_DEVS_CHANCE
-
-            if random.randint(1, 100) <= dev_chance:
-                # Отправляем на кошелек разработчика
-                recipient = random.choice(DEVS_RECIPIENTS)
-                recipient = Web3.to_checksum_address(recipient)
-                logger.info(
-                    f"{self.somnia.account_index} | Transaction {i+1}/{num_transactions}: Sending to dev wallet {recipient}"
-                )
-            else:
-                # Генерируем случайный приватный ключ
-                private_key = Account.create().key
-
-                # Создаем аккаунт из приватного ключа и получаем адрес
-                random_account = Account.from_key(private_key)
-                recipient = random_account.address
-
-                logger.info(
-                    f"{self.somnia.account_index} | Transaction {i+1}/{num_transactions}: Sending to random wallet {recipient}"
-                )
-
-            # Вызываем метод для фактической отправки
-            result = await self._send(recipient, percent_to_send)
-
-            # Небольшая пауза между транзакциями
-            await asyncio.sleep(
-                random.uniform(
-                    self.somnia.config.SETTINGS.RANDOM_PAUSE_BETWEEN_ACTIONS[0],
-                    self.somnia.config.SETTINGS.RANDOM_PAUSE_BETWEEN_ACTIONS[1],
-                )
-            )
-
-        return result
 
     @retry_async(default_value=False)
     async def _send(self, recipient, percent_to_send):

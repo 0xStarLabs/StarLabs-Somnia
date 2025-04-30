@@ -65,7 +65,7 @@ class ConnectSocials:
                 f"{self.somnia.account_index} | Connect socials error: {e}. Sleeping {random_pause} seconds..."
             )
             await asyncio.sleep(random_pause)
-            raise
+            return False
 
     @retry_async(default_value=False)
     async def connect_twitter(self):

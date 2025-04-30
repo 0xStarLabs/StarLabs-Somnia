@@ -67,4 +67,4 @@ class Mintair:
                 f"{self.account_index} | Error deploying Mintair: {e}. Sleeping for {random_sleep} seconds..."
             )
             await asyncio.sleep(random_sleep)
-            raise e
+            return False

@@ -90,4 +90,4 @@ class Mintaura:
                 f"{self.account_index} | Error minting Mintaura SOMNI NFT: {e}. Sleeping for {random_sleep} seconds..."
             )
             await asyncio.sleep(random_sleep)
-            raise e
+            return False

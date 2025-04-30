@@ -88,7 +88,7 @@ class Nerzo:
                 f"{self.account_index} | Error minting NEE NFT: {e}. Sleeping for {random_sleep} seconds..."
             )
             await asyncio.sleep(random_sleep)
-            raise e
+            return False
 
     @retry_async(default_value=False)
     async def mint_shannon(self):
@@ -164,4 +164,4 @@ class Nerzo:
                 f"{self.account_index} | Error minting SHANNON NFT: {e}. Sleeping for {random_sleep} seconds..."
             )
             await asyncio.sleep(random_sleep)
-            raise e
+            return False

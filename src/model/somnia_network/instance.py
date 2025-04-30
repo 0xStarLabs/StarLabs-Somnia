@@ -298,7 +298,7 @@ class Somnia:
                 f"{self.account_index} | Set username error: {e}. Sleeping {random_pause} seconds..."
             )
             await asyncio.sleep(random_pause)
-            raise
+            return False
 
     # Удобный метод-прокси для faucet, если нужен
     async def request_faucet(self):
@@ -322,38 +322,42 @@ class Somnia:
         return await self.send_tokens_service.send_tokens()
 
     async def show_account_info(self):
-        account_info = await self.get_account_info()
-        account_stats = await self.get_account_stats()
-        if account_info and account_stats:
-            console = Console()
+        try:
+            account_info = await self.get_account_info()
+            account_stats = await self.get_account_stats()
+            if account_info and account_stats:
+                console = Console()
 
-            # Create a table for account info
-            table = Table(show_header=True, header_style="bold magenta")
-            table.add_column("Field", style="cyan")
-            table.add_column("Value", style="green")
+                # Create a table for account info
+                table = Table(show_header=True, header_style="bold magenta")
+                table.add_column("Field", style="cyan")
+                table.add_column("Value", style="green")
 
-            # Add account information
-            table.add_row("Address", str(account_info["walletAddress"]))
-            table.add_row("Somnia Username", str(account_info["username"] or "Not set"))
-            table.add_row("Total Points", str(account_stats["totalPoints"]))
-            table.add_row("Total Boosters", str(account_stats["totalBoosters"]))
-            table.add_row("Final Points", str(account_stats["finalPoints"]))
-            table.add_row("Rank", str(account_stats["rank"] or "Not ranked"))
-            table.add_row("Total Referrals", str(account_stats["totalReferrals"]))
-            table.add_row("Quests Completed", str(account_stats["questsCompleted"]))
-            table.add_row("Daily Booster", str(account_stats["dailyBooster"]))
-            table.add_row("Streak Count", str(account_stats["streakCount"]))
-            table.add_row("Discord", str(account_info["discordName"] or "Not connected"))
-            table.add_row("Twitter", str(account_info["twitterName"] or "Not connected"))
-            table.add_row("Telegram", str(account_info["telegramName"] or "Not connected"))
-            table.add_row("Referral Code", str(account_info["referralCode"] or "Not set"))
-            table.add_row("Referral Points", str(account_info["referralPoint"]))
+                # Add account information
+                table.add_row("Address", str(account_info["walletAddress"]))
+                table.add_row("Somnia Username", str(account_info["username"] or "Not set"))
+                table.add_row("Total Points", str(account_stats["totalPoints"]))
+                table.add_row("Total Boosters", str(account_stats["totalBoosters"]))
+                table.add_row("Final Points", str(account_stats["finalPoints"]))
+                table.add_row("Rank", str(account_stats["rank"] or "Not ranked"))
+                table.add_row("Total Referrals", str(account_stats["totalReferrals"]))
+                table.add_row("Quests Completed", str(account_stats["questsCompleted"]))
+                table.add_row("Daily Booster", str(account_stats["dailyBooster"]))
+                table.add_row("Streak Count", str(account_stats["streakCount"]))
+                table.add_row("Discord", str(account_info["discordName"] or "Not connected"))
+                table.add_row("Twitter", str(account_info["twitterName"] or "Not connected"))
+                table.add_row("Telegram", str(account_info["telegramName"] or "Not connected"))
+                table.add_row("Referral Code", str(account_info["referralCode"] or "Not set"))
+                table.add_row("Referral Points", str(account_info["referralPoint"]))
 
-            # Print the table
-            console.print(
-                f"\n[bold yellow]Account #{self.account_index} Information:[/bold yellow]"
-            )
-            console.print(table)
-            return True
-        else:
+                # Print the table
+                console.print(
+                    f"\n[bold yellow]Account #{self.account_index} Information:[/bold yellow]"
+                )
+                console.print(table)
+                return True
+            else:
+                return False
+        except Exception as e:
+            logger.error(f"{self.account_index} | Show account info error: {e}")
             return False
