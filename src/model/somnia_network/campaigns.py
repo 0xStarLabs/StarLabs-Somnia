@@ -18,11 +18,107 @@ SKIP_CAMPAIGNS_IDS = [
 ]
 
 
+CAMPAIGNS_NAMES = {
+    21: "QRusader",
+    20: "Migration Discord Points",
+    19: "SocialFi on Somnia",
+    18: "Masks of the Void",
+    17: "Intersection of DeFi & AI",
+    16: "Mullet Cop",
+    15: "Somnia Gaming Room",
+    14: "Onchain Gaming Frenzy",
+    13: "Netherak Demons",
+    12: "Somnia Yapstorm",
+    11: "Somnia Playground",
+    10: "Darktable x Somnia",
+    9: "Somnia Testnet Odyssey - Mascot Memecoin",
+    8: "Somnia Testnet Odyssey - Socials",
+    7: "Somnia Testnet Odyssey - Sharing is Caring",
+    5: "Somnia Devnet Odyssey - Socials 2",
+    2: "Somnia Devnet Odyssey - Socials",
+    1: "Migration Campaign",
+}
+
+# Map task names to campaign IDs
+CAMPAIGN_ID_MAPPING = {
+    "somnia_quest_qrusader": 21,
+    "somnia_quest_migration_discord_points": 20,
+    "somnia_quest_socialfi_on_somnia": 19,
+    "somnia_quest_masks_of_the_void": 18,
+    "somnia_quest_intersection_of_defi_ai": 17,
+    "somnia_quest_mullet_cop": 16,
+    "somnia_quest_somnia_gaming_room": 15,
+    "somnia_quest_onchain_gaming_frenzy": 14,
+    "somnia_quest_netherak_demons": 13,
+    "somnia_quest_darktable_x_somnia": 10,
+    "somnia_quest_testnet_odyssey_socials": 8,
+    "somnia_quest_somnia_devnet_odyssey_socials_two": 5,
+    "somnia_quest_somnia_devnet_odyssey_socials": 2,
+    "somnia_quest_migration_campaign": 1,
+}
+
+
 class Campaigns:
     def __init__(self, somnia_instance: SomniaProtocol):
         self.somnia = somnia_instance
         self.twitter_instance: Twitter | None = None
         self.connect_socials = ConnectSocials(somnia_instance)
+
+    async def execute_specific_quest(self, task_name: str):
+        """
+        Execute a specific quest based on task name.
+        Returns True if the quest was completed successfully, False otherwise.
+        """
+        if not task_name.startswith("somnia_quest_"):
+            logger.error(
+                f"{self.somnia.account_index} | Invalid quest task name: {task_name}"
+            )
+            return False
+
+        if task_name not in CAMPAIGN_ID_MAPPING:
+            logger.error(
+                f"{self.somnia.account_index} | Unknown campaign task: {task_name}"
+            )
+            return False
+
+        campaign_id = CAMPAIGN_ID_MAPPING[task_name]
+        logger.info(
+            f"{self.somnia.account_index} | Executing specific campaign: {CAMPAIGNS_NAMES.get(campaign_id, 'Unknown')} (ID: {campaign_id})"
+        )
+
+        # Initialize Twitter account for campaign
+        if not await self._initialize_twitter():
+            return False
+
+        campaigns = await self._get_all_campaigns()
+
+        # Find the specific campaign
+        target_campaign = None
+        for campaign in campaigns:
+            if campaign["id"] == campaign_id:
+                target_campaign = campaign
+                break
+
+        if not target_campaign:
+            logger.error(
+                f"{self.somnia.account_index} | Campaign with ID {campaign_id} not found"
+            )
+            return False
+
+        # Complete the specific campaign
+        campaign_info = await self._get_campaign_info(campaign_id)
+        logger.info(
+            f"{self.somnia.account_index} | Completing campaign {campaign_info['name']}..."
+        )
+
+        for quest in campaign_info["quests"]:
+            if not quest["isParticipated"] and quest["status"] == "OPEN":
+                if not await self._complete_quest(quest):
+                    logger.error(
+                        f"{self.somnia.account_index} | Failed to complete quest {quest['title']} from campaign {campaign_info['name']}."
+                    )
+
+        return True
 
     async def complete_campaigns(self):
         try:
@@ -32,28 +128,8 @@ class Campaigns:
 
             campaigns = await self._get_all_campaigns()
 
-            while True:
-                # TWITTER INSTANCE
-                self.twitter_instance = Twitter(
-                    self.somnia.account_index,
-                    self.somnia.twitter_token,
-                    self.somnia.proxy,
-                    self.somnia.config,
-                )
-                ok = await self.twitter_instance.initialize()
-                if not ok:
-                    if (
-                        not self.somnia.config.SOMNIA_NETWORK.SOMNIA_CAMPAIGNS.REPLACE_FAILED_TWITTER_ACCOUNT
-                    ):
-                        logger.error(
-                            f"{self.somnia.account_index} | Failed to initialize twitter instance. Skipping campaigns completion."
-                        )
-                        return False
-                    else:
-                        if not await self._replace_twitter_token():
-                            return False
-                        continue
-                break
+            if not await self._initialize_twitter():
+                return False
 
             for campaign in campaigns:
                 if campaign["id"] in SKIP_CAMPAIGNS_IDS:
@@ -75,8 +151,37 @@ class Campaigns:
             return True
 
         except Exception as e:
+            logger.error(f"{self.somnia.account_index} | Campaigns error: {e}.")
+            return False
+
+    async def _initialize_twitter(self):
+        """Initialize Twitter instance for campaign completion"""
+        try:
+            while True:
+                self.twitter_instance = Twitter(
+                    self.somnia.account_index,
+                    self.somnia.twitter_token,
+                    self.somnia.proxy,
+                    self.somnia.config,
+                )
+                ok = await self.twitter_instance.initialize()
+                if not ok:
+                    if (
+                        not self.somnia.config.SOMNIA_NETWORK.SOMNIA_CAMPAIGNS.REPLACE_FAILED_TWITTER_ACCOUNT
+                    ):
+                        logger.error(
+                            f"{self.somnia.account_index} | Failed to initialize twitter instance. Skipping campaigns completion."
+                        )
+                        return False
+                    else:
+                        if not await self._replace_twitter_token():
+                            return False
+                        continue
+                break
+            return True
+        except Exception as e:
             logger.error(
-                f"{self.somnia.account_index} | Campaigns error: {e}."
+                f"{self.somnia.account_index} | Error initializing Twitter: {e}"
             )
             return False
 
@@ -96,19 +201,23 @@ class Campaigns:
 
                 if quest["type"] == "RETWEET":
                     description = quest["description"]
-                    if 'like' in description.lower():
-                        if not await self.twitter_instance.like(quest["customConfig"]["tweetId"]):
+                    if "like" in description.lower():
+                        if not await self.twitter_instance.like(
+                            quest["customConfig"]["tweetId"]
+                        ):
                             return False
 
                     for _ in range(self.somnia.config.SETTINGS.ATTEMPTS):
-                        ok = await self.twitter_instance.retweet(quest["customConfig"]["tweetId"])
+                        ok = await self.twitter_instance.retweet(
+                            quest["customConfig"]["tweetId"]
+                        )
                         if not ok:
                             continue
 
                         return await self._verify_quest_completion(
                             quest, "social/twitter/retweet"
                         )
-                    
+
                     return False
 
             elif quest["type"] == "JOIN_DISCORD_SERVER":
@@ -144,22 +253,22 @@ class Campaigns:
                 return await self._verify_quest_completion(
                     quest, "social/verify-username"
                 )
-            
+
             elif quest["type"] == "CONNECT_DISCORD":
                 return await self._verify_quest_completion(
                     quest, "social/discord/connect"
                 )
-            
+
             elif quest["type"] == "CONNECT_TWITTER":
                 return await self._verify_quest_completion(
                     quest, "social/twitter/connect"
                 )
-            
+
             elif quest["type"] == "CONNECT_TELEGRAM":
                 return await self._verify_quest_completion(
                     quest, "social/telegram/connect"
                 )
-            
+
             else:
                 logger.error(
                     f"{self.somnia.account_index} | Unknown quest type: {quest['type']} | {quest['title']} | {quest['campaignId']}"
@@ -171,7 +280,7 @@ class Campaigns:
                 self.somnia.config.SETTINGS.PAUSE_BETWEEN_ATTEMPTS[0],
                 self.somnia.config.SETTINGS.PAUSE_BETWEEN_ATTEMPTS[1],
             )
-            if 'You have reached your daily limit for sending' in str(e):
+            if "You have reached your daily limit for sending" in str(e):
                 logger.error(
                     f"{self.somnia.account_index} | Twitter error. Try again later."
                 )
@@ -328,7 +437,6 @@ class Campaigns:
             await asyncio.sleep(random_pause)
             raise
 
-    
     async def _replace_twitter_token(self) -> bool:
         """
         Replaces the current Twitter token with a new one from spare tokens.

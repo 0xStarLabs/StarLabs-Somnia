@@ -41,7 +41,7 @@ class Start:
         self.session: primp.AsyncClient | None = None
         self.somnia_web3: Web3Custom | None = None
         self.somnia_instance: Somnia | None = None
-        
+
         self.wallet = Account.from_key(self.private_key)
         self.wallet_address = self.wallet.address
 
@@ -59,10 +59,19 @@ class Start:
                 self.config.OTHERS.SKIP_SSL_VERIFICATION,
             )
 
-            self.somnia_instance = Somnia(self.account_index, self.session, self.somnia_web3, self.config, self.wallet, self.discord_token, self.twitter_token, self.proxy)
+            self.somnia_instance = Somnia(
+                self.account_index,
+                self.session,
+                self.somnia_web3,
+                self.config,
+                self.wallet,
+                self.discord_token,
+                self.twitter_token,
+                self.proxy,
+            )
             if not await self.somnia_instance.login():
                 return False
-            
+
             return True
         except Exception as e:
             logger.error(f"{self.account_index} | Error: {e}")
@@ -113,7 +122,9 @@ class Start:
                 self.config.SETTINGS.RANDOM_INITIALIZATION_PAUSE[0],
                 self.config.SETTINGS.RANDOM_INITIALIZATION_PAUSE[1],
             )
-            logger.info(f"[{self.account_index}] Sleeping for {pause} seconds before start...")
+            logger.info(
+                f"[{self.account_index}] Sleeping for {pause} seconds before start..."
+            )
             await asyncio.sleep(pause)
 
             task_plan_msg = [f"{i+1}. {task['name']}" for i, task in enumerate(tasks)]
@@ -216,12 +227,13 @@ class Start:
             except Exception as e:
                 logger.error(f"{self.account_index} | Error during cleanup: {e}")
 
-            
             pause = random.randint(
                 self.config.SETTINGS.RANDOM_PAUSE_BETWEEN_ACCOUNTS[0],
                 self.config.SETTINGS.RANDOM_PAUSE_BETWEEN_ACCOUNTS[1],
             )
-            logger.info(f"[{self.account_index}] Sleeping for {pause} seconds before next account...")
+            logger.info(
+                f"[{self.account_index}] Sleeping for {pause} seconds before next account..."
+            )
             await asyncio.sleep(pause)
 
     async def execute_task(self, task):
@@ -230,61 +242,74 @@ class Start:
 
         if task == "connect_socials":
             return await self.somnia_instance.connect_socials()
-        
+
         if task == "faucet":
             return await self.somnia_instance.request_faucet()
-        
+
         if task == "campaigns":
             campaigns = Campaigns(self.somnia_instance)
             return await campaigns.complete_campaigns()
-        
+
+        # Handle specific campaign tasks
+        if task.startswith("somnia_quest_"):
+            campaigns = Campaigns(self.somnia_instance)
+            return await campaigns.execute_specific_quest(task)
+
         if task == "somnia_network_set_username":
             return await self.somnia_instance.set_username()
-        
+
         if task == "send_tokens":
             return await self.somnia_instance.send_tokens_task()
-        
+
         if task == "mint_ping_pong":
             return await self.somnia_instance.mint_ping_pong()
-        
+
         if task == "swaps_ping_pong":
             return await self.somnia_instance.swaps_ping_pong()
-        
+
         if task == "quills_chat":
-            quills = Quills(self.account_index, self.somnia_web3, self.config, self.wallet)
+            quills = Quills(
+                self.account_index, self.somnia_web3, self.config, self.wallet
+            )
             return await quills.chat()
-        
+
         if "nerzo" in task:
-            nerzo = Nerzo(self.account_index, self.somnia_web3, self.config, self.wallet)
+            nerzo = Nerzo(
+                self.account_index, self.somnia_web3, self.config, self.wallet
+            )
             if task == "nerzo_shannon":
                 return await nerzo.mint_shannon()
             elif task == "nerzo_nee":
                 return await nerzo.mint_nee()
-        
+
         if "alze" in task:
             alze = Alze(self.account_index, self.somnia_web3, self.config, self.wallet)
             if task == "alze_yappers":
                 return await alze.mint_yappers()
-        
+
         if task == "mintair_deploy":
-            mintair = Mintair(self.account_index, self.somnia_web3, self.config, self.wallet)
+            mintair = Mintair(
+                self.account_index, self.somnia_web3, self.config, self.wallet
+            )
             return await mintair.deploy_mintair()
-        
+
         if "mintaura" in task:
-            mintaura = Mintaura(self.account_index, self.somnia_web3, self.config, self.wallet)
+            mintaura = Mintaura(
+                self.account_index, self.somnia_web3, self.config, self.wallet
+            )
             if task == "mintaura_somni":
                 return await mintaura.mint_somni()
 
         if task == "somnia_network_info":
             return await self.somnia_instance.show_account_info()
-        
+
         # if task == "quickswap":
         #     quickswap = Quickswap(self.somnia_instance)
         #     return await quickswap.swaps()
-        
+
         logger.error(f"{self.account_index} | Unknown task: {task}")
         return False
-    
+
     async def sleep(self, task_name: str):
         """Делает рандомную паузу между действиями"""
         pause = random.randint(

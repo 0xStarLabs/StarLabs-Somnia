@@ -1,4 +1,5 @@
-TASKS = ["CAMPAIGNS"]
+TASKS = ["CONNECT_SOCIALS", "SPECIFIC_CAMPAIGNS"]
+
 
 # FOR EXAMPLE ONLY, USE YOUR OWN TASKS PRESET
 FULL_TASK = [
@@ -33,6 +34,27 @@ NERZO_NEE = ["nerzo_nee"]
 ALZE_YAPPERS = ["alze_yappers"]
 MINTAIR_DEPLOY = ["mintair_deploy"]
 MINTAURA_SOMNI = ["mintaura_somni"]
+
+# Specific campaign tasks
+SOMNIA_QUEST_QRUSADER = ["somnia_quest_qrusader"]
+SOMNIA_QUEST_SOCIALFI_ON_SOMNIA = ["somnia_quest_socialfi_on_somnia"]
+SOMNIA_QUEST_MASKS_OF_THE_VOID = ["somnia_quest_masks_of_the_void"]
+SOMNIA_QUEST_INTERSECTION_OF_DEFI_AI = ["somnia_quest_intersection_of_defi_ai"]
+SOMNIA_QUEST_MULLET_COP = ["somnia_quest_mullet_cop"]
+SOMNIA_QUEST_SOMNIA_GAMING_ROOM = ["somnia_quest_somnia_gaming_room"]
+SOMNIA_QUEST_ONCHAIN_GAMING_FRENZY = ["somnia_quest_onchain_gaming_frenzy"]
+SOMNIA_QUEST_NETHERAK_DEMONS = ["somnia_quest_netherak_demons"]
+SOMNIA_QUEST_DARKTABLE_X_SOMNIA = ["somnia_quest_darktable_x_somnia"]
+SOMNIA_QUEST_TESTNET_ODYSSEY_SOCIALS = ["somnia_quest_testnet_odyssey_socials"]
+SOMNIA_QUEST_SOMNIA_DEVNET_ODYSSEY_SOCIALS_TWO = ["somnia_quest_somnia_devnet_odyssey_socials_two"]
+SOMNIA_QUEST_SOMNIA_DEVNET_ODYSSEY_SOCIALS = ["somnia_quest_somnia_devnet_odyssey_socials"]
+SOMNIA_QUEST_MIGRATION_CAMPAIGN = ["somnia_quest_migration_campaign"]
+
+# Example of a preset that combines specific campaigns
+SPECIFIC_CAMPAIGNS = [
+    "somnia_quest_qrusader",
+    "somnia_quest_masks_of_the_void",
+]
 
 """
 EN:
@@ -103,5 +125,20 @@ mintair_deploy - Deploy contract on Mintair https://contracts.mintair.xyz/
 
 # SWAPS
 swaps_ping_pong - Swaps Ping Pong tokens - https://testnet.somnia.network/swap
+
+# QUESTS
+somnia_quest_qrusader - Complete "QRusader" 21 quest on Somnia Network - https://quest.somnia.network/
+somnia_quest_socialfi_on_somnia - Complete "SocialFi on Somnia" 19 quest on Somnia Network - https://quest.somnia.network/
+somnia_quest_masks_of_the_void - Complete "Masks of the Void" 18 quest on Somnia Network - https://quest.somnia.network/
+somnia_quest_intersection_of_defi_ai - Complete "Intersection of DeFi & AI" 17 quest on Somnia Network - https://quest.somnia.network/
+somnia_quest_mullet_cop - Complete "Mullet Cop" 16 quest on Somnia Network - https://quest.somnia.network/
+somnia_quest_somnia_gaming_room - Complete "Somnia Gaming Room" 15 quest on Somnia Network - https://quest.somnia.network/
+somnia_quest_onchain_gaming_frenzy - Complete "Onchain Gaming Frenzy" 14 quest on Somnia Network - https://quest.somnia.network/
+somnia_quest_netherak_demons - Complete "Netherak Demons" 13 quest on Somnia Network - https://quest.somnia.network/
+somnia_quest_darktable_x_somnia - Complete "Darktable x Somnia" 10 quest on Somnia Network - https://quest.somnia.network/
+somnia_quest_testnet_odyssey_socials - Complete "Somnia Testnet Odyssey - Socials" 8 quest on Somnia Network - https://quest.somnia.network/
+somnia_quest_somnia_devnet_odyssey_socials_two - Complete "Somnia Devnet Odyssey - Socials 2" 5 quest on Somnia Network - https://quest.somnia.network/
+somnia_quest_somnia_devnet_odyssey_socials - Complete "Somnia Devnet Odyssey - Socials" 2 quest on Somnia Network - https://quest.somnia.network/
+somnia_quest_migration_campaign - Complete "Migration Campaign" quest on Somnia Network - https://quest.somnia.network/
 
 """
