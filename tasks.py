@@ -1,4 +1,4 @@
-TASKS = ["CONNECT_SOCIALS", "SPECIFIC_CAMPAIGNS"]
+TASKS = ["SOMNIA_GM"]
 
 
 # FOR EXAMPLE ONLY, USE YOUR OWN TASKS PRESET
@@ -28,6 +28,7 @@ SWAPS_PING_PONG = ["swaps_ping_pong"]
 QUILLS_CHAT = ["quills_chat"]
 SOMNIA_NETWORK_SET_USERNAME = ["somnia_network_set_username"]
 SOMNIA_NETWORK_INFO = ["somnia_network_info"]
+SOMNIA_GM = ["somnia_gm"]
 
 NERZO_SHANNON = ["nerzo_shannon"]
 NERZO_NEE = ["nerzo_nee"]
@@ -111,6 +112,7 @@ connect_socials - Connect socials to your account - https://quest.somnia.network
 somnia_network_set_username - Set username on Somnia Network - https://quest.somnia.network/
 campaigns - Complete campaigns on Somnia Network - https://quest.somnia.network/
 somnia_network_info - Show account info on Somnia Network (points, referrals, quests, etc.) - https://quest.somnia.network
+somnia_gm - Complete GM tasks on Somnia Network - https://quest.somnia.network
 
 MINTS
 nerzo_shannon - Mint SHANNON NFT https://www.nerzo.xyz/shannon

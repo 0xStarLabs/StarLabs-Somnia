@@ -250,6 +250,9 @@ class Start:
             campaigns = Campaigns(self.somnia_instance)
             return await campaigns.complete_campaigns()
 
+        if task == "somnia_gm":
+            return await self.somnia_instance.press_gm()
+
         # Handle specific campaign tasks
         if task.startswith("somnia_quest_"):
             campaigns = Campaigns(self.somnia_instance)

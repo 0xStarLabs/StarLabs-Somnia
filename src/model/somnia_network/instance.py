@@ -335,7 +335,9 @@ class Somnia:
 
                 # Add account information
                 table.add_row("Address", str(account_info["walletAddress"]))
-                table.add_row("Somnia Username", str(account_info["username"] or "Not set"))
+                table.add_row(
+                    "Somnia Username", str(account_info["username"] or "Not set")
+                )
                 table.add_row("Total Points", str(account_stats["totalPoints"]))
                 table.add_row("Total Boosters", str(account_stats["totalBoosters"]))
                 table.add_row("Final Points", str(account_stats["finalPoints"]))
@@ -344,10 +346,18 @@ class Somnia:
                 table.add_row("Quests Completed", str(account_stats["questsCompleted"]))
                 table.add_row("Daily Booster", str(account_stats["dailyBooster"]))
                 table.add_row("Streak Count", str(account_stats["streakCount"]))
-                table.add_row("Discord", str(account_info["discordName"] or "Not connected"))
-                table.add_row("Twitter", str(account_info["twitterName"] or "Not connected"))
-                table.add_row("Telegram", str(account_info["telegramName"] or "Not connected"))
-                table.add_row("Referral Code", str(account_info["referralCode"] or "Not set"))
+                table.add_row(
+                    "Discord", str(account_info["discordName"] or "Not connected")
+                )
+                table.add_row(
+                    "Twitter", str(account_info["twitterName"] or "Not connected")
+                )
+                table.add_row(
+                    "Telegram", str(account_info["telegramName"] or "Not connected")
+                )
+                table.add_row(
+                    "Referral Code", str(account_info["referralCode"] or "Not set")
+                )
                 table.add_row("Referral Points", str(account_info["referralPoint"]))
 
                 # Print the table
@@ -361,3 +371,38 @@ class Somnia:
         except Exception as e:
             logger.error(f"{self.account_index} | Show account info error: {e}")
             return False
+
+    @retry_async(default_value=False)
+    async def press_gm(self):
+        try:
+            headers = {
+                "accept": "application/json",
+                "accept-language": "ru,en-US;q=0.9,en;q=0.8,ru-RU;q=0.7,zh-TW;q=0.6,zh;q=0.5,uk;q=0.4",
+                "authorization": f"Bearer {self.somnia_login_token}",
+                "content-type": "application/json",
+                "origin": "https://quest.somnia.network",
+                "priority": "u=1, i",
+                "referer": "https://quest.somnia.network/",
+                "sec-ch-ua": '"Chromium";v="136", "Google Chrome";v="136", "Not.A/Brand";v="99"',
+                "sec-ch-ua-mobile": "?0",
+                "sec-ch-ua-platform": '"Windows"',
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+            }
+
+            response = await self.session.post(
+                "https://quest.somnia.network/api/users/gm", headers=headers
+            )
+
+            if response.status_code != 200:
+                raise Exception(
+                    f"Failed to press GM: {response.status_code} | {response.text}"
+                )
+
+            logger.success(f"{self.account_index} | Successfully pressed GM")
+            return True
+        except Exception as e:
+            logger.error(f"{self.account_index} | Press GM error: {e}")
+            raise
