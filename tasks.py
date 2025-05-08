@@ -1,4 +1,4 @@
-TASKS = ["SOMNIA_GM"]
+TASKS = ["ONCHAINGM_GM"]
 
 
 # FOR EXAMPLE ONLY, USE YOUR OWN TASKS PRESET
@@ -35,6 +35,10 @@ NERZO_NEE = ["nerzo_nee"]
 ALZE_YAPPERS = ["alze_yappers"]
 MINTAIR_DEPLOY = ["mintair_deploy"]
 MINTAURA_SOMNI = ["mintaura_somni"]
+BIGINT_ONCHAIN_WORLD = ["bigint_onchain_world"]
+SOMNIA_PAINT = ["somnia_paint"]
+ONCHAINGM_DEPLOY = ["onchaingm_deploy"]
+ONCHAINGM_GM = ["onchaingm_gm"]
 
 # Specific campaign tasks
 SOMNIA_QUEST_QRUSADER = ["somnia_quest_qrusader"]
@@ -121,9 +125,13 @@ alze_yappers - Mint YAPPERS NFT https://alze.xyz/nftCheckout/Yappers
 mintaura_somni - Mint SOMNI NFT https://www.mintaura.io/somni
 quills_chat - Send message in Quills https://quills.fun/
 mint_ping_pong - Mint Ping Pong tokens - https://testnet.somnia.network/swap
+bigint_onchain_world - Mint ONCHAIN WORLD NFT https://app.bigint.co/fully-onchain-world/
+somnia_paint - Send random pixel at https://somniapaint.fun/
+onchaingm_gm - GM on OnchainGM https://onchaingm.com/
 
 DEPLOYS
 mintair_deploy - Deploy contract on Mintair https://contracts.mintair.xyz/
+onchaingm_deploy - Deploy contract on OnchainGM https://onchaingm.com/deploy
 
 # SWAPS
 swaps_ping_pong - Swaps Ping Pong tokens - https://testnet.somnia.network/swap

@@ -4,6 +4,9 @@ import primp
 import random
 import asyncio
 
+from src.model.projects.deploy.onchaingm import OnchainGM
+from src.model.projects.mints.somniapaint import SomniaPaint
+from src.model.projects.mints.bigint import Bigint
 from src.model.somnia_network.campaigns import Campaigns
 from src.model.projects.swaps.quickswap.instance import Quickswap
 from src.model.projects.mints.mintaura import Mintaura
@@ -306,9 +309,24 @@ class Start:
         if task == "somnia_network_info":
             return await self.somnia_instance.show_account_info()
 
+        if task == "bigint_onchain_world":
+            bigint = Bigint(self.account_index, self.somnia_web3, self.config, self.wallet)
+            return await bigint.mint_onchain_world()
+
+        if task == "somnia_paint":
+            somnia_paint = SomniaPaint(self.account_index, self.somnia_web3, self.config, self.wallet)
+            return await somnia_paint.send_pixel()
+
         # if task == "quickswap":
         #     quickswap = Quickswap(self.somnia_instance)
         #     return await quickswap.swaps()
+
+        if task.startswith("onchaingm_"):
+            onchaingm = OnchainGM(self.account_index, self.somnia_web3, self.config, self.wallet)
+            if task == "onchaingm_deploy":
+                return await onchaingm.deploy_onchaingm()
+            elif task == "onchaingm_gm":
+                return await onchaingm.gm()
 
         logger.error(f"{self.account_index} | Unknown task: {task}")
         return False
