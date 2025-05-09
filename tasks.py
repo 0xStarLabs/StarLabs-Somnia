@@ -54,6 +54,7 @@ SOMNIA_QUEST_TESTNET_ODYSSEY_SOCIALS = ["somnia_quest_testnet_odyssey_socials"]
 SOMNIA_QUEST_SOMNIA_DEVNET_ODYSSEY_SOCIALS_TWO = ["somnia_quest_somnia_devnet_odyssey_socials_two"]
 SOMNIA_QUEST_SOMNIA_DEVNET_ODYSSEY_SOCIALS = ["somnia_quest_somnia_devnet_odyssey_socials"]
 SOMNIA_QUEST_MIGRATION_CAMPAIGN = ["somnia_quest_migration_campaign"]
+SOMNIA_QUEST_ECOLOGY_ON_THE_HORIZON = ["somnia_quest_ecology_on_the_horizon"]
 
 # Example of a preset that combines specific campaigns
 SPECIFIC_CAMPAIGNS = [
@@ -150,5 +151,6 @@ somnia_quest_testnet_odyssey_socials - Complete "Somnia Testnet Odyssey - Social
 somnia_quest_somnia_devnet_odyssey_socials_two - Complete "Somnia Devnet Odyssey - Socials 2" 5 quest on Somnia Network - https://quest.somnia.network/
 somnia_quest_somnia_devnet_odyssey_socials - Complete "Somnia Devnet Odyssey - Socials" 2 quest on Somnia Network - https://quest.somnia.network/
 somnia_quest_migration_campaign - Complete "Migration Campaign" quest on Somnia Network - https://quest.somnia.network/
+somnia_quest_ecology_on_the_horizon - Complete "Ecology on the Horizon" quest on Somnia Network - https://quest.somnia.network/
 
 """

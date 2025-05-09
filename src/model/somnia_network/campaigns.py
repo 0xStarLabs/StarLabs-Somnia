@@ -19,6 +19,7 @@ SKIP_CAMPAIGNS_IDS = [
 
 
 CAMPAIGNS_NAMES = {
+    23: "Ecosystem on the Horizon",
     21: "QRusader",
     20: "Migration Discord Points",
     19: "SocialFi on Somnia",
@@ -41,6 +42,7 @@ CAMPAIGNS_NAMES = {
 
 # Map task names to campaign IDs
 CAMPAIGN_ID_MAPPING = {
+    "somnia_quest_ecosystem_on_the_horizon": 23,
     "somnia_quest_qrusader": 21,
     "somnia_quest_migration_discord_points": 20,
     "somnia_quest_socialfi_on_somnia": 19,
