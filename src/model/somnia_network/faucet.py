@@ -22,10 +22,19 @@ class FaucetService:
             logger.info(f"{self.somnia.account_index} | Starting faucet...")
 
             headers = {
-                "accept": "*/*",
-                "content-type": "application/json",
-                "origin": "https://testnet.somnia.network",
-                "referer": "https://testnet.somnia.network/",
+                'accept': '*/*',
+                'accept-language': 'en-IE,en;q=0.9',
+                'content-type': 'application/json',
+                'origin': 'https://testnet.somnia.network',
+                'priority': 'u=1, i',
+                'referer': 'https://testnet.somnia.network/',
+                'sec-ch-ua': '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
+                'sec-ch-ua-mobile': '?0',
+                'sec-ch-ua-platform': '"Windows"',
+                'sec-fetch-dest': 'empty',
+                'sec-fetch-mode': 'cors',
+                'sec-fetch-site': 'same-origin',
+                "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36",
             }
 
             json_data = {
