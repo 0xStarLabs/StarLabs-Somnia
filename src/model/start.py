@@ -4,6 +4,7 @@ import primp
 import random
 import asyncio
 
+from src.model.projects.swaps.somnia_exchange.instance import SomniaExchange
 from src.model.projects.deploy.onchaingm import OnchainGM
 from src.model.projects.mints.somniapaint import SomniaPaint
 from src.model.projects.mints.bigint import Bigint
@@ -250,7 +251,7 @@ class Start:
             return await self.somnia_instance.request_faucet()
 
         if task == "campaigns":
-            campaigns = Campaigns(self.somnia_instance)
+            campaigns = Campaigns(self.somnia_instance, self.somnia_web3, self.wallet)
             return await campaigns.complete_campaigns()
 
         if task == "somnia_gm":
@@ -258,7 +259,7 @@ class Start:
 
         # Handle specific campaign tasks
         if task.startswith("somnia_quest_"):
-            campaigns = Campaigns(self.somnia_instance)
+            campaigns = Campaigns(self.somnia_instance, self.somnia_web3, self.wallet)
             return await campaigns.execute_specific_quest(task)
 
         if task == "somnia_network_set_username":
@@ -316,6 +317,10 @@ class Start:
         if task == "somnia_paint":
             somnia_paint = SomniaPaint(self.account_index, self.somnia_web3, self.config, self.wallet)
             return await somnia_paint.send_pixel()
+
+        if task == "somnia_exchange":
+            somnia_exchange = SomniaExchange(self.somnia_instance)
+            return await somnia_exchange.swaps()
 
         # if task == "quickswap":
         #     quickswap = Quickswap(self.somnia_instance)

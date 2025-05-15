@@ -32,7 +32,7 @@ class FlowConfig:
 class SomniaSwapsConfig:
     BALANCE_PERCENT_TO_SWAP: Tuple[int, int]
     NUMBER_OF_SWAPS: Tuple[int, int]
-
+    SWAP_ALL_TO_STT: bool
 
 @dataclass
 class SomniaTokenSenderConfig:
@@ -159,6 +159,7 @@ class Config:
                     NUMBER_OF_SWAPS=tuple(
                         data["SOMNIA_NETWORK"]["SOMNIA_SWAPS"]["NUMBER_OF_SWAPS"]
                     ),
+                    SWAP_ALL_TO_STT=data["SOMNIA_NETWORK"]["SOMNIA_SWAPS"]["SWAP_ALL_TO_STT"],
                 ),
                 SOMNIA_TOKEN_SENDER=SomniaTokenSenderConfig(
                     BALANCE_PERCENT_TO_SEND=tuple(

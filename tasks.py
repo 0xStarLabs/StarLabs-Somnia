@@ -1,4 +1,4 @@
-TASKS = ["FAUCET"]
+TASKS = ["SOMNIA_EXCHANGE"]
 
 
 # FOR EXAMPLE ONLY, USE YOUR OWN TASKS PRESET
@@ -25,6 +25,7 @@ QUILLS_CHAT = ["quills_chat"]
 SOMNIA_NETWORK_SET_USERNAME = ["somnia_network_set_username"]
 SOMNIA_NETWORK_INFO = ["somnia_network_info"]
 SOMNIA_GM = ["somnia_gm"]
+SOMNIA_EXCHANGE = ["somnia_exchange"]
 
 NERZO_SHANNON = ["nerzo_shannon"]
 NERZO_NEE = ["nerzo_nee"]
@@ -51,6 +52,8 @@ SOMNIA_QUEST_SOMNIA_DEVNET_ODYSSEY_SOCIALS_TWO = ["somnia_quest_somnia_devnet_od
 SOMNIA_QUEST_SOMNIA_DEVNET_ODYSSEY_SOCIALS = ["somnia_quest_somnia_devnet_odyssey_socials"]
 SOMNIA_QUEST_MIGRATION_CAMPAIGN = ["somnia_quest_migration_campaign"]
 SOMNIA_QUEST_ECOSYSTEM_ON_THE_HORIZON = ["somnia_quest_ecosystem_on_the_horizon"]
+SOMNIA_QUEST_FORU_OPEN_EDITION = ["somnia_quest_foru_open_edition"]
+SOMNIA_QUEST_YAPPERS = ["somnia_quest_yappers"]
 
 # Example of a preset that combines specific campaigns
 SPECIFIC_CAMPAIGNS = [
@@ -130,6 +133,7 @@ mintair_deploy - Deploy contract on Mintair https://contracts.mintair.xyz/
 onchaingm_deploy - Deploy contract on OnchainGM https://onchaingm.com/deploy
 
 # SWAPS
+somnia_exchange - Swap tokens on Somnia Exchange - https://somnia.exchange/#/
 
 # QUESTS
 somnia_quest_qrusader - Complete "QRusader" 21 quest on Somnia Network - https://quest.somnia.network/
@@ -146,5 +150,6 @@ somnia_quest_somnia_devnet_odyssey_socials_two - Complete "Somnia Devnet Odyssey
 somnia_quest_somnia_devnet_odyssey_socials - Complete "Somnia Devnet Odyssey - Socials" 2 quest on Somnia Network - https://quest.somnia.network/
 somnia_quest_migration_campaign - Complete "Migration Campaign" quest on Somnia Network - https://quest.somnia.network/
 somnia_quest_ecosystem_on_the_horizon - Complete "Ecology on the Horizon" quest on Somnia Network - https://quest.somnia.network/
-
+somnia_quest_foru_open_edition - Complete "Foru Open Edition" 25 quest on Somnia Network - https://quest.somnia.network/campaigns/25
+somnia_quest_yappers - Complete "Yappers" 26 quest on Somnia Network - https://quest.somnia.network/campaigns/26
 """

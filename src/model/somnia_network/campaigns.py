@@ -1,6 +1,7 @@
 import random
 import asyncio
 import secrets
+from eth_account import Account
 from loguru import logger
 
 from src.model.help.discord import DiscordInviter
@@ -8,7 +9,8 @@ from src.model.help.twitter import Twitter
 from src.model.somnia_network.constants import SomniaProtocol
 from src.model.somnia_network.connect_socials import ConnectSocials
 from src.utils.decorators import retry_async
-
+from src.utils.constants import EXPLORER_URL_SOMNIA
+from src.model.onchain.web3_custom import Web3Custom
 
 SKIP_CAMPAIGNS_IDS = [
     9,
@@ -19,6 +21,8 @@ SKIP_CAMPAIGNS_IDS = [
 
 
 CAMPAIGNS_NAMES = {
+    26: "Yappers",
+    25: "Foru Open Edition",
     23: "Ecosystem on the Horizon",
     21: "QRusader",
     20: "Migration Discord Points",
@@ -42,6 +46,8 @@ CAMPAIGNS_NAMES = {
 
 # Map task names to campaign IDs
 CAMPAIGN_ID_MAPPING = {
+    "somnia_quest_yappers": 26,
+    "somnia_quest_foru_open_edition": 25,
     "somnia_quest_ecosystem_on_the_horizon": 23,
     "somnia_quest_qrusader": 21,
     "somnia_quest_migration_discord_points": 20,
@@ -61,10 +67,12 @@ CAMPAIGN_ID_MAPPING = {
 
 
 class Campaigns:
-    def __init__(self, somnia_instance: SomniaProtocol):
+    def __init__(self, somnia_instance: SomniaProtocol, somnia_web3: Web3Custom, wallet: Account):
         self.somnia = somnia_instance
         self.twitter_instance: Twitter | None = None
         self.connect_socials = ConnectSocials(somnia_instance)
+        self.somnia_web3 = somnia_web3
+        self.wallet = wallet
 
     async def execute_specific_quest(self, task_name: str):
         """
@@ -115,6 +123,14 @@ class Campaigns:
 
         for quest in campaign_info["quests"]:
             if not quest["isParticipated"] and quest["status"] == "OPEN":
+                # Mint FORU NFT
+                if quest["title"] == "Mint an ForU Open EditionNFT":
+                    if not await self._mint_foru_open_edition():
+                        logger.error(
+                            f"{self.somnia.account_index} | Failed to mint FORU NFT. Skipping to the next campaign."
+                        )
+                        continue
+
                 if not await self._complete_quest(quest):
                     logger.error(
                         f"{self.somnia.account_index} | Failed to complete quest {quest['title']} from campaign {campaign_info['name']}."
@@ -145,6 +161,14 @@ class Campaigns:
 
                 for quest in campaign_info["quests"]:
                     if not quest["isParticipated"] and quest["status"] == "OPEN":
+                        # Mint FORU NFT
+                        if quest["title"] == "Mint an ForU Open EditionNFT":
+                            if not await self._mint_foru_open_edition():
+                                logger.error(
+                                    f"{self.somnia.account_index} | Failed to mint FORU NFT. Skipping to the next campaign."
+                                )
+                                continue
+
                         if not await self._complete_quest(quest):
                             logger.error(
                                 f"{self.somnia.account_index} | Failed to complete quest {quest['title']} from campaign {campaign_info['name']}. Skipping to the next campaign."
@@ -269,6 +293,11 @@ class Campaigns:
             elif quest["type"] == "CONNECT_TELEGRAM":
                 return await self._verify_quest_completion(
                     quest, "social/telegram/connect"
+                )
+            
+            elif quest["type"] == "NFT_OWNERSHIP":
+                return await self._verify_quest_completion(
+                    quest, "onchain/nft-ownership"
                 )
 
             else:
@@ -518,3 +547,60 @@ class Campaigns:
                 f"{self.somnia.account_index} | Error replacing Twitter token: {e}"
             )
             return False
+
+    @retry_async(default_value=False)
+    async def _mint_foru_open_edition(self):
+        try:
+            logger.info(f"{self.somnia.account_index} | Minting FORU NFT...")
+
+            # NEE contract address
+            contract_address = "0x92A9207966971830270CB4886c706fdF5e98a38D"
+
+            # Base payload with method ID 0x84bb1e42
+            payload = "0x94bf804d00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000"
+
+            # Prepare transaction
+            transaction = {
+                "from": self.wallet.address,
+                "to": self.somnia_web3.web3.to_checksum_address(contract_address),
+                "value": 0,  # 0 STT as in the example transaction
+                "nonce": await self.somnia_web3.web3.eth.get_transaction_count(
+                    self.wallet.address
+                ),
+                "chainId": await self.somnia_web3.web3.eth.chain_id,
+                "data": payload,
+            }
+
+            # Get dynamic gas parameters instead of hardcoded 30 Gwei
+            gas_params = await self.somnia_web3.get_gas_params()
+            transaction.update(gas_params)
+
+            # Estimate gas
+            gas_limit = await self.somnia_web3.estimate_gas(transaction)
+            transaction["gas"] = gas_limit
+
+            # Execute transaction
+            tx_hash = await self.somnia_web3.execute_transaction(
+                transaction,
+                self.wallet,
+                await self.somnia_web3.web3.eth.chain_id,
+                EXPLORER_URL_SOMNIA,
+            )
+
+            if tx_hash:
+                logger.success(f"{self.somnia.account_index} | Successfully minted FORU NFT")
+                random_pause = random.randint(10, 20)
+                logger.info(f"{self.somnia.account_index} | Sleeping {random_pause} seconds after minting FORU NFT...")
+                await asyncio.sleep(random_pause)
+                return True
+            
+            else:
+                raise Exception("Failed to mint FORU NFT")
+        except Exception as e:
+            random_pause = random.randint(
+                self.somnia.config.SETTINGS.PAUSE_BETWEEN_ATTEMPTS[0],
+                self.somnia.config.SETTINGS.PAUSE_BETWEEN_ATTEMPTS[1],
+            )
+            logger.error(f"{self.somnia.account_index} | Mint FORU open edition error: {e}. Sleeping {random_pause} seconds...")
+            await asyncio.sleep(random_pause)
+            raise e

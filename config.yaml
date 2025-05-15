@@ -36,7 +36,7 @@ SETTINGS:
     
     # random pause before start of every account
     # to make sure that all accounts will be started at different times
-    RANDOM_INITIALIZATION_PAUSE: [3, 40]
+    RANDOM_INITIALIZATION_PAUSE: [20, 40]
     
     # if true, bot will send logs to telegram
     SEND_TELEGRAM_LOGS: false
@@ -54,12 +54,15 @@ FLOW:
 
 SOMNIA_NETWORK:
     # SETTINGS FOR ACTIONS ON https://quest.somnia.network/
-    # use for ping pong swaps
+    # use for exchange tokens
     SOMNIA_SWAPS:
         # percent of balance to swap
-        BALANCE_PERCENT_TO_SWAP: [5, 10]
+        BALANCE_PERCENT_TO_SWAP: [10, 20]
         # random number of swaps
-        NUMBER_OF_SWAPS: [1, 2]
+        NUMBER_OF_SWAPS: [5, 8]
+        # swap all to STT
+        SWAP_ALL_TO_STT: true
+
 
     # Only for SEND_TOKENS task on somnia network website
     SOMNIA_TOKEN_SENDER:
@@ -70,7 +73,7 @@ SOMNIA_NETWORK:
 
         # chance to send tokens to devs. if 100, bot will send tokens to devs wallets every time
         # if 0, bot will send tokens to random wallets
-        SEND_ALL_TO_DEVS_CHANCE: 50
+        SEND_ALL_TO_DEVS_CHANCE: 0
 
     SOMNIA_CAMPAIGNS:
         # if true, bot will replace failed twitter account with next one

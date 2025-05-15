@@ -48,6 +48,19 @@ def load_config():
         with open(config_path, "r") as file:
             config = yaml.safe_load(file)
             logger.info(f"Config loaded successfully")
+
+            # Ensure all required fields exist in the config
+            # This is especially important for the web interface to work correctly
+            if (
+                "SOMNIA_NETWORK" in config
+                and "SOMNIA_SWAPS" in config["SOMNIA_NETWORK"]
+            ):
+                if "SWAP_ALL_TO_STT" not in config["SOMNIA_NETWORK"]["SOMNIA_SWAPS"]:
+                    config["SOMNIA_NETWORK"]["SOMNIA_SWAPS"]["SWAP_ALL_TO_STT"] = True
+                    logger.info(
+                        "Added missing SWAP_ALL_TO_STT field with default value: True"
+                    )
+
             return config
     except Exception as e:
         logger.error(f"Error loading config: {str(e)}")
@@ -58,10 +71,56 @@ def load_config():
 def save_config(config):
     """Сохранение конфигурации в YAML файл"""
     try:
+        # Validate config structure
+        validate_config_structure(config)
+
         with open(CONFIG_PATH, "w") as file:
             yaml.dump(config, file, default_flow_style=False, sort_keys=False)
+            logger.info("Configuration saved successfully")
     except Exception as e:
         logger.error(f"Error saving config: {str(e)}")
+        logger.error(traceback.format_exc())
+        raise
+
+
+def validate_config_structure(config):
+    """Проверяет структуру конфигурации и добавляет отсутствующие поля с значениями по умолчанию"""
+    try:
+        # Ensure all top-level sections exist
+        required_sections = ["SETTINGS", "FLOW", "SOMNIA_NETWORK", "RPCS", "OTHERS"]
+        for section in required_sections:
+            if section not in config:
+                config[section] = {}
+                logger.warning(f"Added missing section: {section}")
+
+        # Check SOMNIA_NETWORK structure
+        if "SOMNIA_NETWORK" in config:
+            somnia_network = config["SOMNIA_NETWORK"]
+            required_subsections = [
+                "SOMNIA_SWAPS",
+                "SOMNIA_TOKEN_SENDER",
+                "SOMNIA_CAMPAIGNS",
+            ]
+
+            for subsection in required_subsections:
+                if subsection not in somnia_network:
+                    somnia_network[subsection] = {}
+                    logger.warning(
+                        f"Added missing subsection: {subsection} in SOMNIA_NETWORK"
+                    )
+
+            # Check SOMNIA_SWAPS fields
+            if "SOMNIA_SWAPS" in somnia_network:
+                somnia_swaps = somnia_network["SOMNIA_SWAPS"]
+                if "SWAP_ALL_TO_STT" not in somnia_swaps:
+                    somnia_swaps["SWAP_ALL_TO_STT"] = True
+                    logger.warning(
+                        "Added missing SWAP_ALL_TO_STT field with default value: True"
+                    )
+
+        logger.info("Config structure validated successfully")
+    except Exception as e:
+        logger.error(f"Error validating config structure: {str(e)}")
         logger.error(traceback.format_exc())
         raise
 
@@ -97,13 +156,56 @@ def update_config():
     """API для обновления конфигурации"""
     try:
         new_config = request.get_json()
+
+        # Validate the new configuration for required fields
+        if not new_config:
+            logger.error("Received empty configuration")
+            return jsonify({"error": "Empty configuration"}), 400
+
+        # Ensure all necessary sections and fields are present
+        validate_config_structure(new_config)
+
+        # Additional validation for specific fields
+        validate_specific_fields(new_config)
+
+        # Log the configuration we're about to save
         logger.info(f"Saving new configuration: {json.dumps(new_config, indent=2)}")
+
+        # Save the configuration
         save_config(new_config)
+
         return jsonify({"status": "success"})
     except Exception as e:
         logger.error(f"Error saving config: {str(e)}")
         logger.error(traceback.format_exc())
         return jsonify({"error": str(e)}), 500
+
+
+def validate_specific_fields(config):
+    """Проверяет конкретные поля конфигурации на соответствие их типов"""
+    try:
+        # Validate SWAP_ALL_TO_STT is a boolean
+        if (
+            "SOMNIA_NETWORK" in config
+            and "SOMNIA_SWAPS" in config["SOMNIA_NETWORK"]
+            and "SWAP_ALL_TO_STT" in config["SOMNIA_NETWORK"]["SOMNIA_SWAPS"]
+        ):
+
+            swap_all_field = config["SOMNIA_NETWORK"]["SOMNIA_SWAPS"]["SWAP_ALL_TO_STT"]
+            if not isinstance(swap_all_field, bool):
+                config["SOMNIA_NETWORK"]["SOMNIA_SWAPS"]["SWAP_ALL_TO_STT"] = bool(
+                    swap_all_field
+                )
+                logger.warning(
+                    f"Converted SWAP_ALL_TO_STT to boolean: {config['SOMNIA_NETWORK']['SOMNIA_SWAPS']['SWAP_ALL_TO_STT']}"
+                )
+
+        # Add more field-specific validations as needed
+
+    except Exception as e:
+        logger.error(f"Error validating specific fields: {str(e)}")
+        logger.error(traceback.format_exc())
+        raise
 
 
 def open_browser():
@@ -1266,7 +1368,8 @@ function renderConfig(config) {
                 // Карточка для настроек Somnia Swaps
                 createCard(cardsContainer, 'Somnia Swaps', 'sync', [
                     { key: 'BALANCE_PERCENT_TO_SWAP', value: config[key]['SOMNIA_SWAPS']['BALANCE_PERCENT_TO_SWAP'] },
-                    { key: 'NUMBER_OF_SWAPS', value: config[key]['SOMNIA_SWAPS']['NUMBER_OF_SWAPS'] }
+                    { key: 'NUMBER_OF_SWAPS', value: config[key]['SOMNIA_SWAPS']['NUMBER_OF_SWAPS'] },
+                    { key: 'SWAP_ALL_TO_STT', value: config[key]['SOMNIA_SWAPS']['SWAP_ALL_TO_STT'] }
                 ], key + '.SOMNIA_SWAPS');
                 
                 // Карточка для Somnia Token Sender
