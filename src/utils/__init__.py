@@ -6,7 +6,7 @@ from .constants import EXPLORER_URL_SOMNIA
 from .statistics import print_wallets_stats
 from .proxy_parser import Proxy
 from .config_browser import run
-
+from .check_github_version import check_version
 __all__ = [
     "create_client",
     "create_twitter_client",
@@ -21,4 +21,5 @@ __all__ = [
     "run",
     "get_config",
     "EXPLORER_URL_SOMNIA",
+    "check_version",
 ]
