@@ -1,4 +1,4 @@
-TASKS = ["SOMNIA_EXCHANGE"]
+TASKS = ["FAUCET"]
 
 
 # FOR EXAMPLE ONLY, USE YOUR OWN TASKS PRESET
@@ -26,6 +26,7 @@ SOMNIA_NETWORK_SET_USERNAME = ["somnia_network_set_username"]
 SOMNIA_NETWORK_INFO = ["somnia_network_info"]
 SOMNIA_GM = ["somnia_gm"]
 SOMNIA_EXCHANGE = ["somnia_exchange"]
+SOMNIA_DOMAINS = ["somnia_domains"]
 
 NERZO_SHANNON = ["nerzo_shannon"]
 NERZO_NEE = ["nerzo_nee"]
@@ -127,6 +128,7 @@ quills_chat - Send message in Quills https://quills.fun/
 bigint_onchain_world - Mint ONCHAIN WORLD NFT https://app.bigint.co/fully-onchain-world/
 somnia_paint - Send random pixel at https://somniapaint.fun/
 onchaingm_gm - GM on OnchainGM https://onchaingm.com/
+somnia_domains - Mint random domain on Somnia Network https://www.somnia.domains/
 
 DEPLOYS
 mintair_deploy - Deploy contract on Mintair https://contracts.mintair.xyz/

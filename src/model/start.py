@@ -4,6 +4,7 @@ import primp
 import random
 import asyncio
 
+from src.model.somnia_network.somnia_domains import SomniaDomains
 from src.model.projects.swaps.somnia_exchange.instance import SomniaExchange
 from src.model.projects.deploy.onchaingm import OnchainGM
 from src.model.projects.mints.somniapaint import SomniaPaint
@@ -322,6 +323,10 @@ class Start:
             somnia_exchange = SomniaExchange(self.somnia_instance)
             return await somnia_exchange.swaps()
 
+        if task == "somnia_domains":
+            somnia_domains = SomniaDomains(self.account_index, self.somnia_web3, self.config, self.wallet)
+            return await somnia_domains.mint_domain()
+        
         # if task == "quickswap":
         #     quickswap = Quickswap(self.somnia_instance)
         #     return await quickswap.swaps()
