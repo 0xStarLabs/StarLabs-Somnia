@@ -67,6 +67,14 @@ class SomniaDomains:
         try:
             logger.info(f"{self.account_index} | Minting Somnia Domain...")
 
+            # Check if balance is sufficient (1 STT)
+            balance = await self.somnia_web3.web3.eth.get_balance(self.wallet.address)
+            if balance < self.somnia_web3.web3.to_wei(1, "ether"):
+                logger.error(
+                    f"{self.account_index} | Insufficient balance. Need at least 1 STT to mint domain."
+                )
+                return False
+
             # Contract address for domain minting
             contract_address = "0xDB4e0A5E7b0d03aA41cBB7940c5e9Bab06cc7157"
 
@@ -132,7 +140,10 @@ class SomniaDomains:
             return True
         except Exception as e:
             error_str = str(e)
-            if "0x08c379a000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000016416c726561647920636c61696d65642061206e616d6500000000000000000000" in error_str:
+            if (
+                "0x08c379a000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000016416c726561647920636c61696d65642061206e616d6500000000000000000000"
+                in error_str
+            ):
                 logger.success(
                     f"{self.account_index} | Domain already minted for this account"
                 )
