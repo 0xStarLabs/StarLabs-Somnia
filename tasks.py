@@ -1,4 +1,4 @@
-TASKS = ["FAUCET"]
+TASKS = ["SOMNIA_QUEST_GAMERS_LAB"]
 
 
 # FOR EXAMPLE ONLY, USE YOUR OWN TASKS PRESET
@@ -55,6 +55,7 @@ SOMNIA_QUEST_MIGRATION_CAMPAIGN = ["somnia_quest_migration_campaign"]
 SOMNIA_QUEST_ECOSYSTEM_ON_THE_HORIZON = ["somnia_quest_ecosystem_on_the_horizon"]
 SOMNIA_QUEST_FORU_OPEN_EDITION = ["somnia_quest_foru_open_edition"]
 SOMNIA_QUEST_YAPPERS = ["somnia_quest_yappers"]
+SOMNIA_QUEST_GAMERS_LAB = ["somnia_quest_gamers_lab"]
 
 # Example of a preset that combines specific campaigns
 SPECIFIC_CAMPAIGNS = [
@@ -154,4 +155,5 @@ somnia_quest_migration_campaign - Complete "Migration Campaign" quest on Somnia 
 somnia_quest_ecosystem_on_the_horizon - Complete "Ecology on the Horizon" quest on Somnia Network - https://quest.somnia.network/
 somnia_quest_foru_open_edition - Complete "Foru Open Edition" 25 quest on Somnia Network - https://quest.somnia.network/campaigns/25
 somnia_quest_yappers - Complete "Yappers" 26 quest on Somnia Network - https://quest.somnia.network/campaigns/26
+somnia_quest_gamers_lab - Complete "Gamers Lab" 33 quest on Somnia Network - https://quest.somnia.network/campaigns/33
 """
