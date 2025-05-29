@@ -67,6 +67,41 @@ class SomniaDomains:
         try:
             logger.info(f"{self.account_index} | Minting Somnia Domain...")
 
+            # Contract address for domain minting
+            contract_address = "0xDB4e0A5E7b0d03aA41cBB7940c5e9Bab06cc7157"
+
+            # Check if already has NFT from this contract using ERC721 balanceOf
+            try:
+                # ERC721 ABI for balanceOf function
+                erc721_abi = [
+                    {
+                        "constant": True,
+                        "inputs": [{"name": "_owner", "type": "address"}],
+                        "name": "balanceOf",
+                        "outputs": [{"name": "balance", "type": "uint256"}],
+                        "type": "function",
+                    }
+                ]
+
+                nft_balance = await self.somnia_web3.get_token_balance(
+                    wallet_address=self.wallet.address,
+                    token_address=contract_address,
+                    token_abi=erc721_abi,
+                    decimals=0,  # NFTs don't have decimals
+                    symbol="DOMAIN",
+                )
+
+                if nft_balance and nft_balance.wei > 0:
+                    logger.success(
+                        f"{self.account_index} | Domain already minted for this account (NFT balance: {nft_balance.wei})"
+                    )
+                    return True
+
+            except Exception as balance_check_error:
+                logger.warning(
+                    f"{self.account_index} | Could not check NFT balance: {balance_check_error}"
+                )
+
             # Check if balance is sufficient (1 STT)
             balance = await self.somnia_web3.web3.eth.get_balance(self.wallet.address)
             if balance < self.somnia_web3.web3.to_wei(1, "ether"):
@@ -74,9 +109,6 @@ class SomniaDomains:
                     f"{self.account_index} | Insufficient balance. Need at least 1 STT to mint domain."
                 )
                 return False
-
-            # Contract address for domain minting
-            contract_address = "0xDB4e0A5E7b0d03aA41cBB7940c5e9Bab06cc7157"
 
             # Generate random domain
             domain = self._generate_random_domain()
