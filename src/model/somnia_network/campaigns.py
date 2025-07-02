@@ -21,6 +21,7 @@ SKIP_CAMPAIGNS_IDS = [
 
 
 CAMPAIGNS_NAMES = {
+    57: "Bigint Onchain Hunt",
     33: "Gamers L.A.B",
     26: "Yappers",
     25: "Foru Open Edition",
@@ -47,6 +48,7 @@ CAMPAIGNS_NAMES = {
 
 # Map task names to campaign IDs
 CAMPAIGN_ID_MAPPING = {
+    "somnia_quest_bigint_onchain_hunt": 57,
     "somnia_quest_gamers_lab": 33,
     "somnia_quest_yappers": 26,
     "somnia_quest_foru_open_edition": 25,
@@ -97,7 +99,7 @@ class Campaigns:
         logger.info(
             f"{self.somnia.account_index} | Executing specific campaign: {CAMPAIGNS_NAMES.get(campaign_id, 'Unknown')} (ID: {campaign_id})"
         )
-
+        
         # Initialize Twitter account for campaign
         if not await self._initialize_twitter():
             return False
@@ -123,6 +125,11 @@ class Campaigns:
             f"{self.somnia.account_index} | Completing campaign {campaign_info['name']}..."
         )
 
+        
+        # Mint Bigint Onchain Hunt NFT
+        if campaign_id == 57:
+            await self._mint_bigint_onchain_hunt_nft()
+
         for quest in campaign_info["quests"]:
             if not quest["isParticipated"] and quest["status"] == "OPEN":
                 # Mint FORU NFT
@@ -132,7 +139,7 @@ class Campaigns:
                             f"{self.somnia.account_index} | Failed to mint FORU NFT. Skipping to the next campaign."
                         )
                         continue
-
+                
                 if not await self._complete_quest(quest):
                     logger.error(
                         f"{self.somnia.account_index} | Failed to complete quest {quest['title']} from campaign {campaign_info['name']}."
@@ -274,6 +281,8 @@ class Campaigns:
                     return await self._verify_quest_completion(
                         quest, "social/discord/join"
                     )
+
+                
                 else:
                     return False
 
@@ -301,6 +310,9 @@ class Campaigns:
                 return await self._verify_quest_completion(
                     quest, "onchain/nft-ownership"
                 )
+
+            elif quest["type"] == "ARBITRARY_API":
+                return await self._complete_arbitrary_api_quest(quest)
 
             else:
                 logger.error(
@@ -387,6 +399,70 @@ class Campaigns:
             )
             logger.error(
                 f"{self.somnia.account_index} | Verify quest completion error: {e}. Sleeping {random_pause} seconds..."
+            )
+            await asyncio.sleep(random_pause)
+            raise e
+
+    @retry_async(default_value=False)
+    async def _complete_arbitrary_api_quest(self, quest: dict):
+        try:
+            random_pause = random.randint(
+                self.somnia.config.SETTINGS.RANDOM_PAUSE_BETWEEN_ACTIONS[0],
+                self.somnia.config.SETTINGS.RANDOM_PAUSE_BETWEEN_ACTIONS[1],
+            )
+            logger.info(
+                f"{self.somnia.account_index} | Waiting for {random_pause} seconds before completing arbitrary API quest..."
+            )
+            await asyncio.sleep(random_pause)
+
+            headers = {
+                "accept": "*/*",
+                "accept-language": "ru,en-US;q=0.9,en;q=0.8,ru-RU;q=0.7,zh-TW;q=0.6,zh;q=0.5,uk;q=0.4",
+                "authorization": f"Bearer {self.somnia.somnia_login_token}",
+                "content-type": "application/json",
+                "origin": "https://quest.somnia.network",
+                "priority": "u=1, i",
+                "referer": f'https://quest.somnia.network/campaigns/{quest["campaignId"]}',
+                "sec-ch-ua-mobile": "?0",
+                "sec-ch-ua-platform": '"Windows"',
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+            }
+
+            json_data = {
+                "questId": quest["id"],
+            }
+
+            response = await self.somnia.session.post(
+                "https://quest.somnia.network/api/offchain/arbitrary-api",
+                headers=headers,
+                json=json_data,
+            )
+
+            if response.status_code != 200:
+                raise Exception(
+                    f"Failed to verify quest completion: {response.status_code} | {response.text}"
+                )
+
+            if response.json()["success"]:
+                logger.success(
+                    f"{self.somnia.account_index} | Quest completed: {quest['title']}"
+                )
+                return True
+            else:
+                raise Exception(
+                    f"{self.somnia.account_index} | Failed to verify quest completion: {response.json()['reason']}"
+                )
+                
+
+        except Exception as e:
+            random_pause = random.randint(
+                self.somnia.config.SETTINGS.PAUSE_BETWEEN_ATTEMPTS[0],
+                self.somnia.config.SETTINGS.PAUSE_BETWEEN_ATTEMPTS[1],
+            )
+            logger.error(
+                f"{self.somnia.account_index} | Complete arbitrary API quest error: {e}. Sleeping {random_pause} seconds..."
             )
             await asyncio.sleep(random_pause)
             raise e
@@ -604,5 +680,115 @@ class Campaigns:
                 self.somnia.config.SETTINGS.PAUSE_BETWEEN_ATTEMPTS[1],
             )
             logger.error(f"{self.somnia.account_index} | Mint FORU open edition error: {e}. Sleeping {random_pause} seconds...")
+            await asyncio.sleep(random_pause)
+            raise e
+
+    async def _mint_bigint_onchain_hunt_nft(self):
+        try:
+            logger.info(f"{self.somnia.account_index} | Minting Bigint Onchain Hunt NFT: Part 1 - Transaction Maker!")
+
+            nfts_payloads = {
+                "Somnia Scout": "0x2484acf80000000000000000000000000000000000000000000000000000000000000001",
+                "Somnia Raider": "0x860881ba0000000000000000000000000000000000000000000000000000000000000001",
+                "Somnia Warlord": "0x2c6a6b9e0000000000000000000000000000000000000000000000000000000000000001",
+                "Somnia King": "0xd87e05c50000000000000000000000000000000000000000000000000000000000000001",
+            }
+
+            contract_address = "0x0cB6931251e1eC264Ce8611A918950BEa9c750E7"
+
+            for nft_name, nft_payload in nfts_payloads.items():
+                logger.info(f"{self.somnia.account_index} | Minting {nft_name} NFT...")
+                result = await self._mint_bigint_onchain_hunt(nft_name, nft_payload, contract_address)
+
+                if not result:
+                    logger.error(f"{self.somnia.account_index} | Failed to mint {nft_name} NFT")
+                    continue
+
+            logger.info(f"{self.somnia.account_index} | Minting Bigint Onchain Hunt NFT: Part 2 - Somnia Early Mover!")
+
+            nfts_payloads = {
+                "Somnia Rookie": "0x2484acf80000000000000000000000000000000000000000000000000000000000000001",
+                "Somnia Grinder": "0x860881ba0000000000000000000000000000000000000000000000000000000000000001",
+                "Somnia Explorer": "0x2c6a6b9e0000000000000000000000000000000000000000000000000000000000000001",
+                "Somnia Overlord": "0xd87e05c50000000000000000000000000000000000000000000000000000000000000001",
+            }
+
+            contract_address = "0xC09ae6287d05Fe2302Ca50E417990B91cd9e4ed1"
+
+            for nft_name, nft_payload in nfts_payloads.items():
+                logger.info(f"{self.somnia.account_index} | Minting {nft_name} NFT...")
+                result = await self._mint_bigint_onchain_hunt(nft_name, nft_payload, contract_address)
+
+                if not result:
+                    logger.error(f"{self.somnia.account_index} | Failed to mint {nft_name} NFT")
+                    continue
+            
+                                
+            return True
+
+        except Exception as e:
+            random_pause = random.randint(
+                self.somnia.config.SETTINGS.PAUSE_BETWEEN_ATTEMPTS[0],
+                self.somnia.config.SETTINGS.PAUSE_BETWEEN_ATTEMPTS[1],)
+
+    @retry_async(default_value=False)
+    async def _mint_bigint_onchain_hunt(self, nft_name: str, nft_payload: str, contract_address: str):
+        try:
+            logger.info(f"{self.somnia.account_index} | Minting Bigint Onchain NFT: {nft_name}...")
+
+            # NEE contract address
+            # contract_address = "0x0cB6931251e1eC264Ce8611A918950BEa9c750E7"
+
+            payload = nft_payload
+
+            # Prepare transaction
+            transaction = {
+                "from": self.wallet.address,
+                "to": self.somnia_web3.web3.to_checksum_address(contract_address),
+                "value": 0,  # 0 STT as in the example transaction
+                "nonce": await self.somnia_web3.web3.eth.get_transaction_count(
+                    self.wallet.address
+                ),
+                "chainId": await self.somnia_web3.web3.eth.chain_id,
+                "data": payload,
+            }
+
+            # Get dynamic gas parameters instead of hardcoded 30 Gwei
+            gas_params = await self.somnia_web3.get_gas_params()
+            transaction.update(gas_params)
+
+            # Estimate gas
+            estimated = await self.somnia_web3.web3.eth.estimate_gas(transaction)
+            # Добавляем 10% к estimated gas для безопасности
+            gas_limit = int(estimated * 2.2)
+            transaction["gas"] = gas_limit
+
+            # Execute transaction
+            tx_hash = await self.somnia_web3.execute_transaction(
+                transaction,
+                self.wallet,
+                await self.somnia_web3.web3.eth.chain_id,
+                EXPLORER_URL_SOMNIA,
+            )
+
+            if tx_hash:
+                logger.success(f"{self.somnia.account_index} | Successfully minted {nft_name} NFT")
+                random_pause = random.randint(10, 20)
+                logger.info(f"{self.somnia.account_index} | Sleeping {random_pause} seconds after minting {nft_name} NFT...")
+                await asyncio.sleep(random_pause)
+                return True
+            
+            else:
+                raise Exception(f"Failed to mint {nft_name} NFT")
+        except Exception as e:
+            if "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003c426967696e744c61756e63687061643732313a20616464726573732065786365656473206d696e74206c696d697420666f722074686973207479706500000000" in str(e):
+                logger.success(f"{self.somnia.account_index} | {nft_name} NFT already minted")
+                return True
+ 
+            random_pause = random.randint(
+                self.somnia.config.SETTINGS.PAUSE_BETWEEN_ATTEMPTS[0],
+                self.somnia.config.SETTINGS.PAUSE_BETWEEN_ATTEMPTS[1],
+            )
+            logger.error(f"{self.somnia.account_index} | Mint {nft_name} NFT error: {e}. Sleeping {random_pause} seconds...")
             await asyncio.sleep(random_pause)
             raise e

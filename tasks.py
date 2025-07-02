@@ -1,4 +1,4 @@
-TASKS = ["FAUCET"]
+TASKS = ["SOMNIA_QUEST_BIGINT_ONCHAIN_HUNT"]
 
 
 # FOR EXAMPLE ONLY, USE YOUR OWN TASKS PRESET
@@ -8,7 +8,6 @@ FULL_TASK = [
     "somnia_network_set_username",
     "send_tokens",
     "quills_chat",
-    "campaigns",
     "nerzo_shannon",
     "nerzo_nee",
     "alze_yappers",
@@ -18,7 +17,6 @@ FULL_TASK = [
 ]
 
 FAUCET = ["faucet"]
-CAMPAIGNS = ["campaigns"]
 SEND_TOKENS = ["send_tokens"]
 CONNECT_SOCIALS = ["connect_socials"]
 QUILLS_CHAT = ["quills_chat"]
@@ -39,16 +37,12 @@ ONCHAINGM_DEPLOY = ["onchaingm_deploy"]
 ONCHAINGM_GM = ["onchaingm_gm"]
 
 # Specific campaign tasks
-SOMNIA_QUEST_TESTNET_ODYSSEY_SOCIALS = ["somnia_quest_testnet_odyssey_socials"]
-SOMNIA_QUEST_SOMNIA_DEVNET_ODYSSEY_SOCIALS_TWO = ["somnia_quest_somnia_devnet_odyssey_socials_two"]
-SOMNIA_QUEST_SOMNIA_DEVNET_ODYSSEY_SOCIALS = ["somnia_quest_somnia_devnet_odyssey_socials"]
-SOMNIA_QUEST_MIGRATION_CAMPAIGN = ["somnia_quest_migration_campaign"]
-SOMNIA_QUEST_YAPPERS = ["somnia_quest_yappers"]
-SOMNIA_QUEST_GAMERS_LAB = ["somnia_quest_gamers_lab"]
+SOMNIA_QUEST_BIGINT_ONCHAIN_HUNT = ["somnia_quest_bigint_onchain_hunt"]
+
 
 # Example of a preset that combines specific campaigns
 SPECIFIC_CAMPAIGNS = [
-    "somnia_quest_qrusader",
+    "somnia_quest_bigint_onchain_hunt",
 ]
 
 """
@@ -104,7 +98,6 @@ faucet - Request Faucet on Somnia Network - https://testnet.somnia.network/
 send_tokens - Send tokens to random wallets - https://testnet.somnia.network/
 connect_socials - Connect socials to your account - https://quest.somnia.network/
 somnia_network_set_username - Set username on Somnia Network - https://quest.somnia.network/
-campaigns - Complete campaigns on Somnia Network - https://quest.somnia.network/
 somnia_network_info - Show account info on Somnia Network (points, referrals, quests, etc.) - https://quest.somnia.network
 somnia_gm - Complete GM tasks on Somnia Network - https://quest.somnia.network
 
@@ -127,9 +120,5 @@ onchaingm_deploy - Deploy contract on OnchainGM https://onchaingm.com/deploy
 somnia_exchange - Swap tokens on Somnia Exchange - https://somnia.exchange/#/
 
 # QUESTS
-somnia_quest_testnet_odyssey_socials - Complete "Somnia Testnet Odyssey - Socials" 8 quest on Somnia Network - https://quest.somnia.network/
-somnia_quest_somnia_devnet_odyssey_socials_two - Complete "Somnia Devnet Odyssey - Socials 2" 5 quest on Somnia Network - https://quest.somnia.network/
-somnia_quest_somnia_devnet_odyssey_socials - Complete "Somnia Devnet Odyssey - Socials" 2 quest on Somnia Network - https://quest.somnia.network/
-somnia_quest_migration_campaign - Complete "Migration Campaign" quest on Somnia Network - https://quest.somnia.network/
-somnia_quest_gamers_lab - Complete "Gamers Lab" 33 quest on Somnia Network - https://quest.somnia.network/campaigns/33
+somnia_quest_bigint_onchain_hunt - Complete "Bigint Onchain Hunt" 57 quest on Somnia Network - https://quest.somnia.network/campaigns/57
 """
