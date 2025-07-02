@@ -101,8 +101,8 @@ class Campaigns:
         )
         
         # Initialize Twitter account for campaign
-        if not await self._initialize_twitter():
-            return False
+        # if not await self._initialize_twitter():
+            # return False
 
         campaigns = await self._get_all_campaigns()
 
