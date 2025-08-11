@@ -78,13 +78,6 @@ async def start():
         return
 
     private_keys = src.utils.read_private_keys("data/private_keys.txt")
-    quills_messages = src.utils.read_txt_file(
-        "quills messages", "data/random_message_quills.txt"
-    )
-
-    # Загружаем сообщения из файла в конфиг
-    config.QUILLS.QUILLS_MESSAGES = quills_messages
-    logger.info(f"Loaded {len(config.QUILLS.QUILLS_MESSAGES)} messages for Quills")
 
     # Read tokens and handle empty files by filling with empty strings
     discord_tokens = src.utils.read_txt_file(

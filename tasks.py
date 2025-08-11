@@ -1,5 +1,6 @@
-TASKS = ["SOMNIA_QUEST_BIGINT_ONCHAIN_HUNT"]
+TASKS = ["TEST"]
 
+TEST = ["somnia_network_info"]
 
 # FOR EXAMPLE ONLY, USE YOUR OWN TASKS PRESET
 FULL_TASK = [
@@ -7,7 +8,6 @@ FULL_TASK = [
     "connect_socials",
     "somnia_network_set_username",
     "send_tokens",
-    "quills_chat",
     "nerzo_shannon",
     "nerzo_nee",
     "alze_yappers",
@@ -19,7 +19,6 @@ FULL_TASK = [
 FAUCET = ["faucet"]
 SEND_TOKENS = ["send_tokens"]
 CONNECT_SOCIALS = ["connect_socials"]
-QUILLS_CHAT = ["quills_chat"]
 SOMNIA_NETWORK_SET_USERNAME = ["somnia_network_set_username"]
 SOMNIA_NETWORK_INFO = ["somnia_network_info"]
 SOMNIA_GM = ["somnia_gm"]
@@ -36,14 +35,6 @@ SOMNIA_PAINT = ["somnia_paint"]
 ONCHAINGM_DEPLOY = ["onchaingm_deploy"]
 ONCHAINGM_GM = ["onchaingm_gm"]
 
-# Specific campaign tasks
-SOMNIA_QUEST_BIGINT_ONCHAIN_HUNT = ["somnia_quest_bigint_onchain_hunt"]
-
-
-# Example of a preset that combines specific campaigns
-SPECIFIC_CAMPAIGNS = [
-    "somnia_quest_bigint_onchain_hunt",
-]
 
 """
 EN:
@@ -106,7 +97,6 @@ nerzo_shannon - Mint SHANNON NFT https://www.nerzo.xyz/shannon
 nerzo_nee - Mint NEE NFT https://www.nerzo.xyz/nee
 alze_yappers - Mint YAPPERS NFT https://alze.xyz/nftCheckout/Yappers
 mintaura_somni - Mint SOMNI NFT https://www.mintaura.io/somni
-quills_chat - Send message in Quills https://quills.fun/
 bigint_onchain_world - Mint ONCHAIN WORLD NFT https://app.bigint.co/fully-onchain-world/
 somnia_paint - Send random pixel at https://somniapaint.fun/
 onchaingm_gm - GM on OnchainGM https://onchaingm.com/
@@ -119,6 +109,4 @@ onchaingm_deploy - Deploy contract on OnchainGM https://onchaingm.com/deploy
 # SWAPS
 somnia_exchange - Swap tokens on Somnia Exchange - https://somnia.exchange/#/
 
-# QUESTS
-somnia_quest_bigint_onchain_hunt - Complete "Bigint Onchain Hunt" 57 quest on Somnia Network - https://quest.somnia.network/campaigns/57
 """

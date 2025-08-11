@@ -71,21 +71,14 @@ class WalletInfo:
     address: str
     balance: float
     transactions: int
+    final_points: Optional[str] = None
+    rank: Optional[str] = None
+    quests_completed: Optional[str] = None
 
 
 @dataclass
 class WalletsConfig:
     wallets: List[WalletInfo] = field(default_factory=list)
-
-
-@dataclass
-class QuillsConfig:
-    QUILLS_MESSAGES: List[str] = field(
-        default_factory=lambda: [
-            "Hello",
-        ]
-    )
-
 
 @dataclass
 class Config:
@@ -96,7 +89,6 @@ class Config:
     OTHERS: OthersConfig
     WALLETS: WalletsConfig = field(default_factory=WalletsConfig)
     lock: asyncio.Lock = field(default_factory=asyncio.Lock)
-    QUILLS: QuillsConfig = field(default_factory=QuillsConfig)
     spare_twitter_tokens: List[str] = field(default_factory=list)
     
     @classmethod

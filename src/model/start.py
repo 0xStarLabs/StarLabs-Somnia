@@ -15,7 +15,6 @@ from src.model.projects.mints.mintaura import Mintaura
 from src.model.projects.deploy.mintair import Mintair
 from src.model.projects.mints.alze import Alze
 from src.model.projects.mints.nerzo import Nerzo
-from src.model.projects.others import Quills
 from src.model.somnia_network.instance import Somnia
 from src.model.help.stats import WalletStats
 from src.model.onchain.web3_custom import Web3Custom
@@ -274,12 +273,6 @@ class Start:
 
         if task == "swaps_ping_pong":
             return await self.somnia_instance.swaps_ping_pong()
-
-        if task == "quills_chat":
-            quills = Quills(
-                self.account_index, self.somnia_web3, self.config, self.wallet
-            )
-            return await quills.chat()
 
         if "nerzo" in task:
             nerzo = Nerzo(

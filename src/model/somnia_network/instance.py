@@ -325,6 +325,7 @@ class Somnia:
         try:
             account_info = await self.get_account_info()
             account_stats = await self.get_account_stats()
+
             if account_info and account_stats:
                 console = Console()
 
@@ -365,8 +366,25 @@ class Somnia:
                     f"\n[bold yellow]Account #{self.account_index} Information:[/bold yellow]"
                 )
                 console.print(table)
+
+                # Save Somnia stats to wallet_stats
+                try:
+                    from src.model.help.stats import WalletStats
+                    wallet_stats = WalletStats(self.config, self.web3)
+                    # Используем адрес кошелька для поиска, так как он уникален
+                    wallet_stats.update_somnia_stats_by_address(
+                        wallet_address=self.wallet.address,
+                        final_points=str(account_stats["finalPoints"]),
+                        rank=str(account_stats["rank"]) if account_stats["rank"] else "Not ranked",
+                        quests_completed=str(account_stats["questsCompleted"])
+                    )
+                    logger.info(f"{self.account_index} | Somnia stats saved to wallet statistics")
+                except Exception as stats_error:
+                    logger.warning(f"{self.account_index} | Could not update wallet stats: {stats_error}")
+
                 return True
             else:
+                logger.error(f"{self.account_index} | Failed to get account info or stats")
                 return False
         except Exception as e:
             logger.error(f"{self.account_index} | Show account info error: {e}")

@@ -7,13 +7,7 @@ from src.utils.config import Config
 from src.model.onchain.web3_custom import Web3Custom
 
 
-@dataclass
-class WalletInfo:
-    account_index: int
-    private_key: str
-    address: str
-    balance: float
-    transactions: int
+from src.utils.config import WalletInfo
 
 
 class WalletStats:
@@ -70,3 +64,60 @@ class WalletStats:
         except Exception as e:
             logger.error(f"Error getting wallet stats: {e}")
             return False
+
+    def update_somnia_stats(self, private_key: str, final_points: str = None, rank: str = None, quests_completed: str = None):
+        """
+        Обновляет Somnia статистику для кошелька
+        
+        Args:
+            private_key: Приватный ключ кошелька
+            final_points: Финальные очки
+            rank: Ранг пользователя
+            quests_completed: Количество выполненных квестов
+        """
+        try:
+            with self._lock:
+                for wallet in self.config.WALLETS.wallets:
+                    if wallet.private_key == private_key:
+                        if final_points is not None:
+                            wallet.final_points = final_points
+                        if rank is not None:
+                            wallet.rank = rank
+                        if quests_completed is not None:
+                            wallet.quests_completed = quests_completed
+                        logger.info(f"Updated Somnia stats for wallet {wallet.address}")
+                        break
+        except Exception as e:
+            logger.error(f"Error updating Somnia stats: {e}")
+
+    def update_somnia_stats_by_address(self, wallet_address: str, final_points: str = None, rank: str = None, quests_completed: str = None):
+        """
+        Обновляет Somnia статистику для кошелька по адресу
+        
+        Args:
+            wallet_address: Адрес кошелька
+            final_points: Финальные очки
+            rank: Ранг пользователя
+            quests_completed: Количество выполненных квестов
+        """
+        try:
+            with self._lock:
+                found = False
+                for wallet in self.config.WALLETS.wallets:
+                    # Сравниваем адреса в нижнем регистре для надежности
+                    if wallet.address.lower() == wallet_address.lower():
+                        if final_points is not None:
+                            wallet.final_points = final_points
+                        if rank is not None:
+                            wallet.rank = rank
+                        if quests_completed is not None:
+                            wallet.quests_completed = quests_completed
+                        logger.info(f"Updated Somnia stats for wallet {wallet.address}: Points={final_points}, Rank={rank}, Quests={quests_completed}")
+                        found = True
+                        break
+                
+                if not found:
+                    logger.warning(f"Wallet with address {wallet_address} not found in wallet stats")
+                    
+        except Exception as e:
+            logger.error(f"Error updating Somnia stats by address: {e}")
